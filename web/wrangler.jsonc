@@ -18,7 +18,13 @@
   ],
   "observability": {
     "enabled": true
+  },
+  "vars": {
+    // Paymob redirects to $APP_URL/billing/result.
+    "APP_URL": "https://lamba.abdulbasitsharaf.workers.dev"
   }
-  // Secrets (not committed): set with `npx wrangler secret put <NAME>`
-  // NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SECRET_KEY, PAYMOB_* keys, AI_API_KEY
+  // NEXT_PUBLIC_* values are baked in at build time from .env.local (public only).
+  // Server secrets (not committed): `npx wrangler secret bulk .env.cloudflare`
+  // SUPABASE_SECRET_KEY, PAYMOB_SECRET_KEY, PAYMOB_PUBLIC_KEY,
+  // PAYMOB_CARD_INTEGRATION_ID, PAYMOB_HMAC_SECRET, PAYMOB_WEBHOOK_URL
 }
