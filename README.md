@@ -8,6 +8,7 @@
 | --- | --- |
 | [`docs/PRD.md`](docs/PRD.md) | الـ PRD الكامل: المستخدمين، والنطاق، والمتطلبات، والتسعير، والتقنية، والـ AI، والمخاطر |
 | [`docs/handover-chatgpt.md`](docs/handover-chatgpt.md) | ملف Handover كامل لوحده، تلصقه في ChatGPT أو أي مساعد تاني يكمّل منه |
+| [`docs/labs-handover-v2.md`](docs/labs-handover-v2.md) | رؤية المعامل التفاعلية في 4 مواد بالـ AI (فيزياء، كيمياء، أحياء، رياضيات): الأدوات، والنماذج العلمية، واختبارات القبول. الفيزياء الأول، وبعد بوابة الدفع |
 | [`docs/user-journey.png`](docs/user-journey.png) | رحلة الطالب في الديمو |
 | [`plan/index.html`](plan/index.html) | خطة الفريق: القواعد، والعصف الذهني، والرود ماب، والـ Payment Gate Checklist |
 | [`prompts/claude-code.md`](prompts/claude-code.md) | البرومبتات الجاهزة لـ Claude Code |
