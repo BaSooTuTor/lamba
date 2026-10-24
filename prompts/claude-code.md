@@ -41,7 +41,7 @@ Sell an exam-cohort pass, not a monthly subscription.
 - /billing/result: verify HMAC, show result in Arabic (fallback activation if webhook missed).
 - Paywall on locked lessons; /billing page with plan, end date, payment history.
 Tables: profiles (education_system, grade, track, exam_cohort, payer, parent_phone, xp, streak),
-lessons, attempts, subscriptions, payments, waitlist, interests.
+lessons, attempts, progress, subscriptions, payments, waitlist, interests.
 Use the Paymob skill/docs for exact endpoints and HMAC field order. Never expose secret keys.
 
 Also: footer pages About, Privacy, Refund, Return; contact phone/email; real prices.
@@ -51,17 +51,31 @@ Build the payment flow FIRST, then give me a test checklist.
 ## 2. الدرس التفاعلي والمدرس الذكي
 
 ```text
-Add the lesson engine and the AI tutor:
-1. Lessons are stored as JSON cards: concept -> simulation -> question -> summary (4-6 cards).
-2. Ohm's law simulation: sliders for voltage (0-24 V) and resistance (1-12 ohm),
-   a bulb whose brightness follows I = V/R, an ammeter readout. Save the student's last V and R.
-3. Exam-style multiple-choice question after the simulation.
-4. On a wrong answer, POST /api/tutor/explain with question, correct answer, student answer and
-   the simulation state. Return strict JSON { diagnosis, hint, try_in_sim } in Egyptian Arabic,
-   max 3 lines, never reveal the final answer. Validate JSON; retry once; fall back to a
-   pre-written explanation per question. Cache common wrong answers.
-5. POST /api/practice/generate (subscribers only): 3 new MCQs on the same concept with
+Add the lesson engine and the AI tutor. Every lesson is the SAME 6-card loop, stored as JSON in lessons.content:
+1. intro_predict: one-line intro + an ungraded prediction MCQ ("If we double the voltage, the bulb will...?").
+   Save the choice in attempts.prediction.
+2. sim_mission: Ohm's law simulation with a concrete goal ("make the current exactly 2 A").
+   Sliders for voltage (0-24 V) and resistance (1-12 ohm), bulb brightness follows I = V/R,
+   ammeter readout, live status text. The Continue button unlocks only when the goal is met.
+   Save the last V and R in attempts.sim_state.
+3. explain: starts by reflecting the student's prediction (right or wrong), then I = V / R,
+   direct vs inverse relation, and a worked example using the mission's numbers.
+4. concept_check: conceptual MCQ (not a calculation), +10 XP when correct.
+5. exam_question: Thanaweya-style MCQ with 2 attempts.
+6. recap: 3-line summary, concepts mastered vs needs review, XP + streak,
+   then next lesson (or Paywall if locked) and back to lessons.
+Wrong answer on card 4 or 5:
+   a. POST /api/tutor/explain with question, correct answer, student answer, prediction and sim state.
+      Return strict JSON { diagnosis, hint, try_in_sim } in Egyptian Arabic, max 3 lines,
+      never reveal the final answer. Validate JSON; retry once; fall back to a pre-written
+      explanation per question. Cache common wrong answers.
+   b. Button "try it in the simulation" opens the sim preset with the question's numbers.
+   c. Second attempt. If wrong again: show the step-by-step solution and mark the concept needs_review.
+   Count hints in attempts.hints_used.
+Mastery: progress(user_id, lesson_id, concept, mastered, review_due). mastered = true only when the
+   student answers correctly WITHOUT having seen the solution. Spaced review (+1 and +3 days) is P2, skip tonight.
+POST /api/practice/generate (subscribers only): 3 new MCQs on the same concept with
    step-by-step solutions; recompute each answer with Ohm's law in code and drop mismatches.
-6. Streak + XP (not purchasable, not spendable).
+Streak + XP (not purchasable, not spendable).
 Seed one realistic demo attempt so the demo never starts empty.
 ```
