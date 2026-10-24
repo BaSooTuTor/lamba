@@ -12,7 +12,7 @@ type Payment = {
   created_at: string;
 };
 
-export default function MockPaymentPage() {
+export function MockPayment({ priceEgp }: { priceEgp: number }) {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [paying, setPaying] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -49,16 +49,16 @@ export default function MockPaymentPage() {
   }, []);
 
   return (
-    <main dir="rtl" className="mx-auto max-w-md p-6 font-sans">
+    <main className="p-6">
       <h1 className="text-2xl font-bold">دفع تجريبي (Mock)</h1>
-      <p className="mt-2 text-sm text-gray-500">باقة السنة كاملة · 799 ج · من غير Paymob</p>
+      <p className="mt-2 text-sm text-gray-500">{priceEgp} ج · من غير Paymob · للتجربة بس</p>
 
       <button
         onClick={pay}
         disabled={paying}
         className="mt-6 w-full rounded-lg bg-black px-4 py-3 text-white disabled:opacity-50"
       >
-        {paying ? "جاري الدفع…" : "ادفع 799 ج"}
+        {paying ? "جاري الدفع…" : `ادفع ${priceEgp} ج`}
       </button>
 
       <button
