@@ -256,9 +256,8 @@ export function OhmLesson({ content: c, nextLesson }: Props) {
               <div className="text-[13px] font-semibold text-[#B42318]">{c.exam.wrong_note}</div>
               <section className="flex flex-col gap-3 rounded-2xl border-[1.5px] border-[#D8DBE0] bg-[#FAFAFB] p-4">
                 <div className="flex items-center gap-2.5">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full border-[1.5px] border-dashed border-[#9AA0A8] text-[10px] text-[#5B616B]">
-                    AI
-                  </div>
+                  {/* eslint-disable-next-line @next/next/no-img-element -- animated SVG, no optimization needed */}
+                  <img src="/brand/lamba-tutor.svg" alt="" width={40} height={40} className="h-10 w-10" />
                   <div className="flex flex-col">
                     <div className="text-[15px] font-bold">المدرس الذكي</div>
                     <div className="text-xs text-[#5B616B]">

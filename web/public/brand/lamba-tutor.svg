@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="المدرس الذكي">
+  <title>Lamba AI tutor · المدرس الذكي</title>
+  <style>
+    .glow { animation: glow 2.4s ease-in-out infinite; }
+    .spark { transform-box: fill-box; transform-origin: center; animation: spark 2.4s ease-in-out infinite; }
+    @keyframes glow { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+    @keyframes spark { 0%, 100% { opacity: 0; transform: scale(0.6); } 50% { opacity: 1; transform: scale(1); } }
+    @media (prefers-reduced-motion: reduce) { .glow, .spark { animation: none; } .spark { opacity: 1; } }
+  </style>
+  <!-- Chat bubble: the tutor talking -->
+  <path d="M10 6h44a8 8 0 0 1 8 8v28a8 8 0 0 1-8 8H30l-12 10v-10h-8a8 8 0 0 1-8-8V14a8 8 0 0 1 8-8z" fill="#06144D"/>
+  <!-- The Lamba bulb with its resistor filament -->
+  <circle class="glow" cx="32" cy="24" r="12" fill="#EAB308"/>
+  <polyline points="26,25 28,20 30,28 32,20 34,28 36,20 38,25" fill="none" stroke="#06144D" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+  <rect x="27" y="37" width="10" height="3.2" rx="1.6" fill="#EAB308"/>
+  <rect x="28.5" y="42" width="7" height="3.2" rx="1.6" fill="#EAB308"/>
+  <!-- AI sparkle -->
+  <path class="spark" d="M50 11l1.6 4.4L56 17l-4.4 1.6L50 23l-1.6-4.4L44 17l4.4-1.6z" fill="#F2E2A4"/>
+</svg>
