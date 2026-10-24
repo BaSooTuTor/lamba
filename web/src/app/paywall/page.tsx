@@ -28,7 +28,7 @@ export default async function PaywallPage({ searchParams }: { searchParams: Prom
             ساري حتى {formatArabicDate(offer.accessEnd)}، يعني حوالي {offer.monthsLeft} شهور، والدور التاني داخل فيهم.
           </p>
           <ul className="mt-4 list-inside list-disc space-y-1 text-sm text-gray-600">
-            <li>كل دروس الفيزيا بالمحاكاة</li>
+            <li>كل دروس الفيزيا بالمحاكاة، والمواد التانية أول ما تنزل</li>
             <li>المدرس الذكي يشرحلك غلطتك أنت</li>
             <li>مسائل جديدة بنظام الامتحان بعد كل درس</li>
           </ul>
@@ -36,7 +36,9 @@ export default async function PaywallPage({ searchParams }: { searchParams: Prom
           <div className="mt-5">
             <SubscribeButton priceEgp={offer.priceEgp} />
           </div>
-          <p className="mt-3 text-center text-xs text-gray-400">الدفع الآمن عن طريق Paymob</p>
+          <p className="mt-3 text-center text-xs text-gray-500">
+            هتتحوّل لصفحة الدفع الآمنة من Paymob عشان تدخل بيانات الكارت، وبعدها ترجع هنا على طول.
+          </p>
         </section>
       ) : (
         <p className="mt-6 text-gray-500">مفيش باقة متاحة لدفعتك دلوقتي.</p>

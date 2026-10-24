@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getProfile, getUser } from "@/lib/auth";
 import { getOffer } from "@/lib/cohorts";
 import { createCheckoutUrl } from "@/lib/paymob";
+import { supabaseAdmin } from "@/lib/supabase-admin";
 
 // Creates a Paymob payment intention for the signed-in user and returns the Unified Checkout URL.
 // The plan and price come from the user's exam cohort and today's date, never from the request.
@@ -15,19 +16,19 @@ export async function POST(req: NextRequest) {
   if (!offer) return NextResponse.json({ error: "مفيش باقة متاحة لدفعتك دلوقتي" }, { status: 409 });
 
   const appUrl = process.env.APP_URL ?? req.nextUrl.origin;
-  // Paymob echoes this back as merchant_order_id; the webhook parses it (see paymob-reference.ts).
+  // Paymob echoes this back as merchant_order_id. Who paid is decided by the checkouts row below.
   const reference = `${user.id}:${offer.cohort}:${offer.plan}:${Date.now()}`;
 
   // Billing fields come from the profile; Paymob requires all of them, so fall back only when missing.
   const [firstName, ...rest] = (profile?.name ?? "").trim().split(/\s+/);
 
   try {
-    const url = await createCheckoutUrl({
+    const { url, orderId, intentionId } = await createCheckoutUrl({
       amountCents: offer.amountCents,
-      itemName: `Lamba ${offer.cohort} ${offer.plan}`,
+      itemName: `باقة لمبة · الثانوية العامة ${offer.cohort} (${offer.label})`,
       billing: {
-        first_name: firstName || "Lamba",
-        last_name: rest.join(" ") || "Student",
+        first_name: firstName || "طالب",
+        last_name: rest.join(" ") || "لمبة",
         email: user.email || "student@example.com",
         phone_number: profile?.phone || "+201000000000",
       },
@@ -35,6 +36,23 @@ export async function POST(req: NextRequest) {
       redirectionUrl: `${appUrl}/billing/result`,
       notificationUrl: process.env.PAYMOB_WEBHOOK_URL,
     });
+
+    // Bind this Paymob order to the student before sending them to pay.
+    const { error } = await supabaseAdmin().from("checkouts").insert({
+      user_id: user.id,
+      cohort: offer.cohort,
+      plan: offer.plan,
+      amount_cents: offer.amountCents,
+      special_reference: reference,
+      paymob_order_id: orderId,
+      paymob_intention_id: intentionId,
+    });
+    if (error) {
+      console.error("checkout insert failed:", error.message);
+      return NextResponse.json({ error: "مقدرناش نبدأ الدفع، جرّب تاني" }, { status: 500 });
+    }
+    if (!orderId) console.warn("checkout: Paymob returned no intention_order_id; matching by reference only");
+
     return NextResponse.json({ url });
   } catch (e) {
     // Only the prefix ("Paymob intention failed (400)" / "Missing X"): Paymob's error body can echo billing data.

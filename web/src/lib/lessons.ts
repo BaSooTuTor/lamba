@@ -9,9 +9,22 @@ export type LessonMeta = {
   order: number;
   title: string;
   is_free: boolean;
+  streams: string[];
+  lab_type: string | null;
+  status: "live" | "coming_soon";
 };
 
-const COLUMNS = 'id, subject, chapter, "order", title, is_free';
+export type Subject = "physics" | "chemistry" | "biology" | "mathematics";
+
+// Order and Arabic names of the four subjects (docs/labs-handover-v2.md, section 10).
+export const SUBJECTS: { id: Subject; name: string }[] = [
+  { id: "physics", name: "فيزياء" },
+  { id: "chemistry", name: "كيمياء" },
+  { id: "biology", name: "أحياء" },
+  { id: "mathematics", name: "رياضيات" },
+];
+
+const COLUMNS = 'id, subject, chapter, "order", title, is_free, streams, lab_type, status';
 
 export async function listLessons() {
   const supabase = await createClient();

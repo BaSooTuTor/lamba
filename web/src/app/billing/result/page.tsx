@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { getUser } from "@/lib/auth";
 import { COHORTS, formatArabicDate } from "@/lib/cohorts";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { hmacStringFromQuery, verifyHmac } from "../../../../supabase/functions/_shared/paymob-hmac";
-import { MISSING_HMAC_SECRET, parseReference } from "../../../../supabase/functions/_shared/paymob-reference";
+import { MISSING_HMAC_SECRET } from "../../../../supabase/functions/_shared/paymob-reference";
+import { findCheckout, paymentArgs } from "../../../../supabase/functions/_shared/paymob-checkout";
 
 // Paymob redirects here after checkout. The query is trusted only if its HMAC matches;
 // a verified success is recorded here too, in case the webhook never arrives.
@@ -25,25 +25,24 @@ export default async function BillingResultPage({
 
   const valid = await verifyHmac(hmacStringFromQuery(query), query.hmac ?? "", secret);
   const success = valid && query.success === "true";
-  const { userId, cohort, plan } = parseReference(query.merchant_order_id);
-  const accessEnd = COHORTS[cohort as keyof typeof COHORTS]?.accessEnd;
+  // Who paid comes from our checkouts table, looked up by the HMAC-covered order id,
+  // so this fallback is as safe as the webhook (both are idempotent on the transaction id).
+  const db = supabaseAdmin();
+  const checkout = valid ? await findCheckout(db, query.order, query.merchant_order_id) : null;
+  const accessEnd = checkout ? COHORTS[checkout.cohort as keyof typeof COHORTS]?.accessEnd : undefined;
 
-  // merchant_order_id is not covered by the HMAC, so the fallback only records a payment
-  // for the user who is signed in here; otherwise the webhook stays the only writer.
-  const user = await getUser();
   let recordError: string | null = null;
-  if (success && userId && user?.id === userId) {
-    const { error } = await supabaseAdmin().rpc("record_payment", {
-      p_transaction_id: query.id!,
-      p_amount_cents: Number(query.amount_cents),
-      p_plan: plan,
-      p_success: true,
-      p_raw: { source: "redirection", ...query },
-      p_user_id: userId,
-      p_cohort: cohort,
-    });
-    if (error) {
-      console.error("record_payment failed", error.message);
+  if (success) {
+    const { error } = await db.rpc(
+      "record_payment",
+      paymentArgs(
+        checkout,
+        { id: query.id!, amount_cents: Number(query.amount_cents), success: true },
+        { source: "redirection", ...query },
+      ),
+    );
+    if (error || !checkout) {
+      console.error("record_payment failed", error?.message ?? "no checkout for order");
       recordError = "الدفع نجح بس لسه بنفعّل الباقة. لو الدروس مافتحتش خلال دقيقة كلّمنا.";
     }
   }
