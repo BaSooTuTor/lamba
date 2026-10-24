@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { getUser, hasAccess } from "@/lib/auth";
 import { getLesson } from "@/lib/lessons";
+import { OHM_LESSON } from "@/lib/ohm-lesson";
+import { OhmLesson } from "./ohm-lesson";
 
 // Placeholder until the lesson engine (6-card loop) lands. The access check is server-side,
 // so a locked lesson never renders without an active pass.
@@ -25,6 +27,11 @@ export default async function LessonPage({ params }: { params: Promise<{ id: str
   if (!lesson.is_free) {
     const user = await getUser();
     if (!user || !(await hasAccess(user.id))) redirect(`/paywall?lesson=${lesson.id}`);
+  }
+
+  if (lesson.id === "phy_s3_electric_current_ohm") {
+    const next = OHM_LESSON.next_lesson_id ? await getLesson(OHM_LESSON.next_lesson_id) : null;
+    return <OhmLesson content={OHM_LESSON} nextLesson={next && { id: next.id, title: next.title }} />;
   }
 
   return (
