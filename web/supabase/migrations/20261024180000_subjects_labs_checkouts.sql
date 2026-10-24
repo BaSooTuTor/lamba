@@ -3,8 +3,10 @@
 -- each Paymob order to the user who started it.
 
 -- Streams: علمي علوم = science, علمي رياضة = math.
+-- (أدبي students go to the waitlist for now, so track stays null for them.)
 alter table public.profiles
-  add constraint profiles_track_check check (track is null or track in ('science', 'math'));
+  add constraint profiles_track_check check (track is null or track in ('science', 'math')),
+  add column parent_name text;
 
 alter table public.lessons
   add column streams text[] not null default '{science,math}',

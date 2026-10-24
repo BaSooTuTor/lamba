@@ -1,9 +1,12 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { getProfile, getUser, hasAccess } from "@/lib/auth";
 import { listLessons, SUBJECTS, type Subject } from "@/lib/lessons";
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ subject?: string }> }) {
   const [{ subject: requested }, user, lessons] = await Promise.all([searchParams, getUser(), listLessons()]);
+  // Visitors start with the welcome screen and onboarding (wireframes 0.1–0.6).
+  if (!user) redirect("/welcome");
   const [profile, unlocked] = user
     ? await Promise.all([getProfile(user.id), hasAccess(user.id)])
     : [null, false];
@@ -83,12 +86,6 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ s
             </li>
           ))}
         </ul>
-      )}
-
-      {!user && (
-        <Link href="/signup" className="mt-8 block rounded-lg bg-accent px-4 py-3 text-center font-semibold text-white">
-          اعمل حساب وابدأ مجانًا
-        </Link>
       )}
     </main>
   );

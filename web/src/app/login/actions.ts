@@ -1,6 +1,8 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { examYear, ONBOARDING_COOKIE, parseAnswers } from "@/lib/onboarding";
 import { createClient } from "@/lib/supabase/server";
 
 // `values` refills the form after a failed submit (React resets it); never includes the password.
@@ -33,6 +35,33 @@ export async function signup(_: AuthState, formData: FormData): Promise<AuthStat
   if (error) return { error: authError(error.code, error.message), values };
   // Email confirmation is on in the project: there is no session until the link is clicked.
   if (!data.session) return { message: "بعتنالك إيميل تأكيد. افتح اللينك وبعدين سجّل دخولك." };
+
+  // Onboarding answers (wireframes 0.2–0.5) go into the new profile; RLS allows updating your own row.
+  const cookieStore = await cookies();
+  const answers = parseAnswers(cookieStore.get(ONBOARDING_COOKIE)?.value);
+  if (answers && data.user) {
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .update({
+        education_system: answers.system,
+        grade: answers.grade,
+        track: answers.track === "literary" ? null : answers.track,
+        exam_cohort: String(examYear(answers.grade)),
+        payer: answers.payer,
+        parent_name: answers.parentName ?? null,
+        parent_phone: answers.parentPhone ?? null,
+      })
+      .eq("id", data.user.id);
+    if (profileError) console.error("onboarding profile update failed", profileError.message);
+
+    if (answers.subjects.length > 0) {
+      const { error: interestsError } = await supabase
+        .from("interests")
+        .insert(answers.subjects.map((subject) => ({ user_id: data.user!.id, subject })));
+      if (interestsError) console.error("onboarding interests insert failed", interestsError.message);
+    }
+    cookieStore.delete(ONBOARDING_COOKIE);
+  }
 
   redirect(safeNext(formData.get("next")));
 }
