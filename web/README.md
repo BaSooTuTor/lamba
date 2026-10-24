@@ -29,14 +29,19 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Local Supabase
+## Supabase (hosted)
 
 ```bash
-npx supabase start   # needs Docker; applies supabase/migrations and serves supabase/functions
-npx supabase status  # prints the local URL and keys for .env.local
+npx supabase login
+npx supabase link --project-ref <ref>          # asks for the DB password (or set SUPABASE_DB_PASSWORD)
+npx supabase db push                            # applies supabase/migrations
+npx supabase functions deploy paymob-webhook --no-verify-jwt
+npx supabase functions deploy mock-payment
+npx supabase secrets set --env-file <file with PAYMOB_HMAC_SECRET=...>
 ```
 
-Copy `.env.example` to `.env.local` and fill it in. The mock payment flow is at `/mock-payment`.
+Copy `.env.example` to `.env.local` and fill it in. With `ENABLE_MOCK_PAYMENT=true` the mock payment
+flow is at `/mock-payment` (404 otherwise).
 
 ## Deploy on Cloudflare Workers
 

@@ -37,7 +37,8 @@ export async function POST(req: NextRequest) {
     });
     return NextResponse.json({ url });
   } catch (e) {
-    console.error("checkout failed", (e as Error).message);
+    // Only the prefix ("Paymob intention failed (400)" / "Missing X"): Paymob's error body can echo billing data.
+    console.error("checkout failed:", (e as Error).message.split(":")[0]);
     return NextResponse.json({ error: "مقدرناش نبدأ الدفع، جرّب تاني" }, { status: 502 });
   }
 }

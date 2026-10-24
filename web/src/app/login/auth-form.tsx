@@ -43,6 +43,7 @@ export function AuthForm({
             type={f.type}
             autoComplete={f.autoComplete}
             dir={f.dir}
+            defaultValue={state.values?.[f.name]}
             required
             className="rounded-lg border border-gray-300 px-3 py-3 text-base font-normal focus:border-accent focus:outline-none"
           />
