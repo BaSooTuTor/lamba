@@ -23,7 +23,7 @@ export const SYSTEMS: { id: EducationSystem; name: string; note: string; live: b
   { id: "azhar", name: "الثانوية الأزهرية", note: "", live: false },
   { id: "igcse", name: "IGCSE", note: "الشهادة البريطانية", live: false },
   { id: "american", name: "الدبلومة الأمريكية", note: "", live: false },
-  { id: "other", name: "نظام تاني", note: "قولّنا", live: false },
+  { id: "other", name: "نظام تاني", note: "", live: false },
 ];
 
 export const GRADES: { id: 1 | 2 | 3; name: string }[] = [
@@ -58,7 +58,11 @@ export function summary(a: OnboardingAnswers) {
     a.track ? TRACKS.find((t) => t.id === a.track)?.name : null,
     `امتحان ${examYear(a.grade)}`,
   ];
-  return parts.filter(Boolean).join(" · ");
+  // No-break spaces inside each part, so a line never splits "امتحان | 2028".
+  return parts
+    .filter((p): p is string => Boolean(p))
+    .map((p) => p.replaceAll(" ", " "))
+    .join(" · ");
 }
 
 // The cookie comes from the browser, so every field is checked before use.

@@ -4,14 +4,21 @@ import Link from "next/link";
 import { useActionState } from "react";
 import type { AuthState } from "./actions";
 
-type Field = { name: string; label: string; type: string; autoComplete: string; dir?: "ltr" };
+type Field = { name: string; label: string; type: string; autoComplete: string; dir?: "ltr"; placeholder?: string };
 
 const FIELDS: Record<"login" | "signup", Field[]> = {
   signup: [
-    { name: "name", label: "الاسم", type: "text", autoComplete: "name" },
-    { name: "email", label: "الإيميل", type: "email", autoComplete: "email", dir: "ltr" },
-    { name: "password", label: "الباسورد", type: "password", autoComplete: "new-password", dir: "ltr" },
-    { name: "phone", label: "رقم الموبايل", type: "tel", autoComplete: "tel", dir: "ltr" },
+    { name: "name", label: "الاسم", type: "text", autoComplete: "name", placeholder: "مريم" },
+    { name: "email", label: "الإيميل", type: "email", autoComplete: "email", dir: "ltr", placeholder: "name@example.com" },
+    {
+      name: "password",
+      label: "كلمة السر",
+      type: "password",
+      autoComplete: "new-password",
+      dir: "ltr",
+      placeholder: "••••••••",
+    },
+    { name: "phone", label: "رقم الموبايل", type: "tel", autoComplete: "tel", dir: "ltr", placeholder: "01X XXXX XXXX" },
   ],
   login: [
     { name: "email", label: "الإيميل", type: "email", autoComplete: "email", dir: "ltr" },
@@ -43,6 +50,7 @@ export function AuthForm({
             type={f.type}
             autoComplete={f.autoComplete}
             dir={f.dir}
+            placeholder={f.placeholder}
             defaultValue={state.values?.[f.name]}
             required
             className="rounded-lg border border-gray-300 px-3 py-3 text-base font-normal focus:border-accent focus:outline-none"
@@ -57,13 +65,13 @@ export function AuthForm({
         disabled={pending}
         className="mt-2 rounded-lg bg-accent px-4 py-3 font-semibold text-white hover:bg-accent-dark disabled:opacity-50"
       >
-        {pending ? "لحظة…" : mode === "login" ? "دخول" : "اعمل حساب"}
+        {pending ? "لحظة…" : mode === "login" ? "دخول" : "ابدأ الدرس المجاني"}
       </button>
 
       <p className="text-center text-sm text-gray-500">
         {mode === "login" ? "معندكش حساب؟ " : "عندك حساب؟ "}
         <Link href={otherHref} className="font-semibold text-accent">
-          {mode === "login" ? "اعمل حساب" : "سجّل دخولك"}
+          {mode === "login" ? "اعمل حساب" : "سجّل دخول"}
         </Link>
       </p>
     </form>
