@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<title>محاكاة قانون أوم</title>
+<title>مهمة في المحاكاة</title>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -19,18 +19,20 @@ a{color:#2F5BEA}a:hover{color:#1D3FB8}
     <a href="Home.dc.html" aria-label="إغلاق الدرس" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #1F2328">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </a>
-    <div style="flex-grow: 1; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px">
+    <div style="flex-grow: 1; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px">
       <div style="height: 6px; border-radius: 999px; background: {{accent}}"></div>
       <div style="height: 6px; border-radius: 999px; background: {{accent}}"></div>
+      <div style="height: 6px; border-radius: 999px; background: #E3E5E9"></div>
       <div style="height: 6px; border-radius: 999px; background: #E3E5E9"></div>
       <div style="height: 6px; border-radius: 999px; background: #E3E5E9"></div>
       <div style="height: 6px; border-radius: 999px; background: #E3E5E9"></div>
     </div>
-    <div style="font-size: 12px; color: #5B616B">2 / 5</div>
+    <div style="font-size: 12px; color: #5B616B">2 / 6</div>
   </div>
   <div style="display: flex; flex-direction: column; gap: 6px">
-    <h1 style="margin: 0; font-size: 22px; font-weight: 700">حرّك الجهد وشوف اللمبة</h1>
-    <p style="margin: 0; font-size: 14px; line-height: 1.7; color: #5B616B">غيّر الجهد والمقاومة، وراقب التيار في الأميتر.</p>
+    <div style="font-size: 12px; font-weight: 600; color: #5B616B">مهمتك</div>
+    <h1 style="margin: 0; font-size: 22px; font-weight: 700">خلّي التيار 2 أمبير بالظبط</h1>
+    <p style="margin: 0; font-size: 14px; line-height: 1.7; color: #5B616B">حرّك الجهد والمقاومة لحد ما الأميتر يقرا 2.0 A.</p>
   </div>
   <div style="border: 1.5px solid #D8DBE0; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 14px; background: #FAFAFB">
     <svg width="100%" height="200" viewBox="0 0 320 200" role="img" aria-label="دايرة كهربية فيها بطارية ومقاومة ولمبة">
@@ -66,15 +68,16 @@ a{color:#2F5BEA}a:hover{color:#1D3FB8}
       <input id="res" type="range" min="1" max="12" step="1" value="{{ r }}" onChange="{{ onR }}" style="width: 100%; accent-color: {{accent}}; height: 32px">
     </div>
   </div>
-  <div style="border-radius: 12px; background: #EEF2FD; padding: 12px 14px; font-size: 14px; line-height: 1.7">لاحظ: لما الجهد يزيد، التيار بيزيد واللمبة بتنوّر أكتر. ولما المقاومة تزيد، التيار بيقل.</div>
-  <a href="Tutor.dc.html" style="margin-top: auto; height: 52px; border-radius: 12px; background: {{accent}}; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700">كمّل للسؤال</a>
+  <div style="{{ statusStyle }}">{{ statusText }}</div>
+  <div style="font-size: 13px; line-height: 1.7; color: #5B616B">توقّعك كان: «هتنوّر أكتر». زوّد الجهد وشوف بنفسك.</div>
+  <a href="Explain.dc.html" style="margin-top: auto; height: 52px; border-radius: 12px; background: {{accent}}; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700">كمّل للشرح</a>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#2F5BEA","options":["#2F5BEA","#0F7B6C","#B45309"]},"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { v: 12, r: 6 };
+    this.state = { v: 6, r: 6 };
   }
   renderVals() {
     const v = this.state.v;
@@ -86,6 +89,8 @@ class Component extends DCLogic {
       r: r,
       iText: i.toFixed(1),
       glow: Math.min(0.9, i / 4),
+      statusText: Math.abs(i - 2) < 0.05 ? 'المهمة تمّت: التيار 2.0 أمبير' : 'لسه، التيار دلوقتي ' + i.toFixed(1) + ' أمبير',
+      statusStyle: Math.abs(i - 2) < 0.05 ? 'border-radius: 12px; background: #E6F4F1; color: #0F7B6C; padding: 12px 14px; font-size: 15px; font-weight: 700' : 'border-radius: 12px; background: #F2F3F5; color: #1F2328; padding: 12px 14px; font-size: 15px; font-weight: 600',
       onV: (e) => this.setState({ v: Number(e.target.value) }),
       onR: (e) => this.setState({ r: Number(e.target.value) })
     };
