@@ -59,7 +59,14 @@ Oct 24, 2026 · @Abdulbasit
 | الباقة سارية لحد آخر أغسطس مش يوليو | عشان طلاب الدور التاني ميتقفلش عليهم الاشتراك |
 | ضمان استرجاع 14 يوم ودرس مجاني أول | عشان يطمّن الأهل قدام المبلغ الكبير |
 | Supabase مش Convex | التسجيل جاهز، و Claude Code عارفه كويس، و Postgres مش بيربطنا بمزوّد |
-| البناء بـ Claude Code، والنشر على Vercel من أول نص ساعة | الـ Webhook محتاج URL عام |
+| البناء بـ Claude Code، والداتا على Supabase، والنشر على Cloudflare من أول نص ساعة | الـ Webhook محتاج URL عام |
+
+**قرارات اتاخدت بعد كده**
+
+- **Onboarding من 4 أسئلة قبل التسجيل:** نظام الدراسة، والسنة والشعبة، والمواد، وولي الأمر. الـ MVP للثانوية العامة بس، والأنظمة التانية (البكالوريا المصرية، والأزهرية، و IGCSE، والدبلومة الأمريكية) بتروح لقائمة انتظار.
+- **البزنس موديل فيه 4 مصادر:** باقة الدفعة للطالب (MVP)، وترخيص سنوي للسناتر والمدارس يشرحوا بيه بالمحاكاة، والتوسع لأنظمة تانية، ومسار برمجة.
+- **البرمجة (Scratch ثم Python):** لأن البكالوريا المصرية فيها البرمجة في أولى ثانوي، وفي تانية ثانوي في مسار الهندسة وعلوم الحاسب. اللغة اختيارنا إحنا، لأن المصادر ماحددتش لغة رسمية.
+- **الأدوات:** Supabase و Claude Code و Cloudflare (بدل Vercel).
 
 **اسم المنتج: لمبة (Lamba).** استبعدنا «Eduactive» لأنه قريب جدًا من Eduact، ودي شركة EdTech مصرية أبواب اشترتها في سبتمبر 2026. واخترنا «لمبة» لأن «اللمبة نوّرت» تعبير مصري معناه «فهمت»، والديمو نفسه فيه لمبة بتنوّر. واستبعدنا «فهّمني» كمان، لأنه قريب من منصة «فهيم» الموجودة.
 
@@ -120,11 +127,11 @@ export const COHORTS = {
 | F11 | زرار مخفي بيغيّر «النهارده» عشان الحكام يشوفوا السعر بيتغير | P1 |
 | F12 | صفحات السياسات وبيانات التواصل | P1 |
 
-**التقنية:** Next.js (App Router) و TypeScript و Tailwind، والواجهة عربي RTL ومتظبطة على الموبايل الأول. الداتا والتسجيل على Supabase (Postgres + Auth)، والنشر على Vercel.
+**التقنية:** Next.js (App Router) و TypeScript و Tailwind، والواجهة عربي RTL ومتظبطة على الموبايل الأول. الداتا والتسجيل على Supabase (Postgres + Auth)، والنشر على Cloudflare Workers عن طريق OpenNext. المفاتيح السرية بـ wrangler secret، والتحقق من الـ HMAC بـ Web Crypto.
 
 | الجدول | الأعمدة |
 | --- | --- |
-| profiles | id, name, exam\_cohort, xp, streak, last\_active\_date |
+| profiles | id, name, education\_system, grade, track, exam\_cohort, payer, parent\_phone, xp, streak, last\_active\_date |
 | lessons | id, subject, chapter, order, is\_free, content (JSON) |
 | attempts | user\_id, lesson\_id, card\_id, answer, is\_correct, sim\_state (JSON), ai\_feedback |
 | subscriptions | user\_id, cohort, plan, status, current\_period\_end |
@@ -159,6 +166,8 @@ export const COHORTS = {
 7. **تم الاشتراك:** العنوان «تم الاشتراك، واللمبة نوّرت»، وإيصال فيه الباقة والمبلغ والتاريخ ورقم العملية، وزرار «ابدأ درس قانون أوم».
 8. **اشتراكي:** كارت الباقة وحالتها «سارية»، والفترة من 24 أكتوبر 2026 لحد 31 أغسطس 2027 مع شريط تقدم، وسجل المدفوعات. ولينكات: طلب استرجاع، والسياسات، وتواصل معانا.
 
+**واتضافت 6 شاشات Onboarding قبل التسجيل:** الترحيب، ونظام الدراسة، والسنة والشعبة (سنة الامتحان بتتحسب لوحدها)، والمواد (ومعاها البرمجة قريبًا)، وولي الأمر، وقائمة الانتظار للأنظمة التانية. وشاشة التسجيل بقت «آخر خطوة: اعمل حسابك» وبتعرض ملخص الإجابات.
+
 **البرومبت الجاهز لـ Claude Code** (الفريق بيبني بيه):
 
 ```text
@@ -167,7 +176,7 @@ Interactive Arabic-first (RTL, mobile-first) learning platform for Egyptian Than
 interactive simulations + an AI tutor that explains each student's own mistake.
 Scope: Physics, chapter "Electric current & Ohm's law", 3 lessons (lesson 1 free, 2-3 paid).
 
-Stack: Next.js (App Router) + TypeScript + Tailwind + Supabase (auth + Postgres). Deploy on Vercel.
+Stack: Next.js (App Router) + TypeScript + Tailwind + Supabase (auth + Postgres). Deploy on Cloudflare Workers via OpenNext (@opennextjs/cloudflare). Secrets via wrangler; verify HMAC with Web Crypto.
 
 PAYMENTS (Paymob SANDBOX, one-time card payments ONLY, no recurring):
 Sell an exam-cohort pass, not a monthly subscription.
@@ -183,7 +192,8 @@ Sell an exam-cohort pass, not a monthly subscription.
   and set subscriptions.current_period_end = cohort accessEnd. Idempotent.
 - /billing/result: verify HMAC, show result in Arabic (fallback activation if webhook missed).
 - Paywall on locked lessons; /billing page with plan, end date, payment history.
-Tables: profiles, lessons, attempts, subscriptions, payments.
+ONBOARDING (before sign-up): welcome; education system (Thanaweya Amma available; Egyptian Baccalaureate, Azhar, IGCSE, American Diploma, other = waitlist); grade + track (exam year computed: grade 3 = 2027); subjects of interest (physics live; others + programming Scratch/Python = coming soon); payer + optional parent phone.
+Tables: profiles (+ education_system, grade, track, exam_cohort, payer, parent_phone), lessons, attempts, subscriptions, payments, waitlist, interests.
 Use the Paymob skill/docs for exact endpoints and HMAC field order. Never expose secret keys.
 
 Also: footer pages About, Privacy, Refund, Return; contact phone/email; real prices.
@@ -206,7 +216,7 @@ Build the payment flow FIRST, then give me a test checklist.
 
 1. التسجيل في Paymob وناخد الـ Sandbox keys، ونسجل الحساب في فورم الإيفنت بنفس البيانات بالظبط.
 2. نعمل مشروع Supabase والجداول، ونقفل Confirm email.
-3. Claude Code يعمل الهيكل الأساسي بالبرومبت اللي في قسم 6، وننشر على Vercel على طول.
+3. Claude Code يعمل الهيكل الأساسي بالبرومبت اللي في قسم 6، وننشر على Cloudflare على طول.
 4. نشغّل الدفع من الأول للآخر بكارت الاختبار.
 5. نبني الدروس والمحاكاة والمدرس الذكي ورا الـ Paywall.
 6. تجميد الفيتشرز، وبعده Payment Gate، وبروفة الـ Pitch.

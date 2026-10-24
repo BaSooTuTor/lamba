@@ -11,11 +11,13 @@
 | [`docs/user-journey.png`](docs/user-journey.png) | رحلة الطالب في الديمو |
 | [`plan/index.html`](plan/index.html) | خطة الفريق: القواعد، والعصف الذهني، والرود ماب، والـ Payment Gate Checklist |
 | [`prompts/claude-code.md`](prompts/claude-code.md) | البرومبتات الجاهزة لـ Claude Code |
-| [`wireframes/`](wireframes/) | 8 شاشات Wireframes من Claude Design |
+| [`wireframes/`](wireframes/) | 14 شاشة Wireframes من Claude Design: 6 للـ Onboarding و 8 للتجربة والدفع |
 
 ## الخلاصة في سطور
 
 - **المشكلة:** الطالب بيحفظ من غير ما يفهم، وبيذاكر لوحده من غير ما حد يصحح له. فالأهل بيدفعوا دروس خصوصي.
 - **الحل:** محاكاة تفاعلية على المنهج المصري، ومدرس AI بيشرح الغلطة بناءً على اللي الطالب عمله في المحاكاة.
+- **الـ Onboarding:** 4 أسئلة قبل التسجيل (نظام الدراسة، والسنة والشعبة، والمواد، وولي الأمر). الـ MVP للثانوية العامة بس، والأنظمة التانية بتروح لقائمة انتظار.
 - **الدفع:** دفعة واحدة على Paymob Sandbox. الـ Sandbox مفيهوش Subscriptions، فالباقة بتفضل سارية لحد 31 أغسطس 2027، والدور التاني داخل فيها.
-- **التقنية:** Next.js و TypeScript و Tailwind و Supabase، والنشر على Vercel.
+- **البزنس موديل:** باقة الدفعة للطالب، وترخيص سنوي للسناتر والمدارس يشرحوا بيه بالمحاكاة، وبعدين التوسع للبكالوريا المصرية والأنظمة التانية ومسار برمجة (Scratch ثم Python).
+- **الأدوات:** Next.js و TypeScript و Tailwind، والداتا على Supabase، والبناء بـ Claude Code، والنشر على Cloudflare Workers.
