@@ -13,6 +13,7 @@ Scope: Physics, chapter "Electric current & Ohm's law", 3 lessons (lesson 1 free
 Stack: Next.js (App Router) + TypeScript + Tailwind + Supabase (auth + Postgres).
 Deploy on Cloudflare Workers via OpenNext (@opennextjs/cloudflare) with wrangler.
 Secrets via `wrangler secret put` (local: .dev.vars). Verify Paymob HMAC with Web Crypto (crypto.subtle).
+Use Supabase Edge Functions for the Paymob webhook and Postgres functions for idempotent writes.
 
 ONBOARDING (before sign-up, 4 questions):
 - Welcome screen.
@@ -33,9 +34,9 @@ Sell an exam-cohort pass, not a monthly subscription.
 - GET /api/offer: active plan/price/end date/months left for the user's cohort.
 - POST /api/checkout {cohort}: server picks plan+price, creates Paymob payment intention
   (env: PAYMOB_SECRET_KEY, PAYMOB_PUBLIC_KEY, PAYMOB_CARD_INTEGRATION_ID, PAYMOB_HMAC_SECRET),
-  special_reference = userId:cohort:plan:timestamp, notification_url /api/paymob/webhook,
+  special_reference = userId:cohort:plan:timestamp, notification_url {SUPABASE_URL}/functions/v1/paymob-webhook,
   redirection_url /billing/result. Return the Unified Checkout URL (public key + client_secret).
-- POST /api/paymob/webhook: verify HMAC; on success insert payment (unique transaction id)
+- Supabase Edge Function paymob-webhook: verify HMAC; on success insert payment (unique transaction id)
   and set subscriptions.current_period_end = cohort accessEnd. Idempotent.
 - /billing/result: verify HMAC, show result in Arabic (fallback activation if webhook missed).
 - Paywall on locked lessons; /billing page with plan, end date, payment history.

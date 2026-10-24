@@ -1,0 +1,23 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "lamba",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    {
+      // Lets the worker call itself (used by OpenNext for caching/revalidation).
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "lamba"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+  // Secrets (not committed): set with `npx wrangler secret put <NAME>`
+  // NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SECRET_KEY, PAYMOB_* keys, AI_API_KEY
+}

@@ -20,4 +20,4 @@
 - **الـ Onboarding:** 4 أسئلة قبل التسجيل (نظام الدراسة، والسنة والشعبة، والمواد، وولي الأمر). الـ MVP للثانوية العامة بس، والأنظمة التانية بتروح لقائمة انتظار.
 - **الدفع:** دفعة واحدة على Paymob Sandbox. الـ Sandbox مفيهوش Subscriptions، فالباقة بتفضل سارية لحد 31 أغسطس 2027، والدور التاني داخل فيها.
 - **البزنس موديل:** باقة الدفعة للطالب، وترخيص سنوي للسناتر والمدارس يشرحوا بيه بالمحاكاة، وبعدين التوسع للبكالوريا المصرية والأنظمة التانية ومسار برمجة (Scratch ثم Python).
-- **الأدوات:** Next.js و TypeScript و Tailwind، والداتا على Supabase، والبناء بـ Claude Code، والنشر على Cloudflare Workers.
+- **الأدوات:** Next.js و TypeScript و Tailwind، والداتا على Supabase (Postgres و Auth و Edge Functions)، والبناء بـ Claude Code، والنشر على Cloudflare Workers بـ OpenNext.

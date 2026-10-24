@@ -67,6 +67,7 @@ Oct 24, 2026 · @Abdulbasit
 - **البزنس موديل فيه 4 مصادر:** باقة الدفعة للطالب (MVP)، وترخيص سنوي للسناتر والمدارس يشرحوا بيه بالمحاكاة، والتوسع لأنظمة تانية، ومسار برمجة.
 - **البرمجة (Scratch ثم Python):** لأن البكالوريا المصرية فيها البرمجة في أولى ثانوي، وفي تانية ثانوي في مسار الهندسة وعلوم الحاسب. اللغة اختيارنا إحنا، لأن المصادر ماحددتش لغة رسمية.
 - **الأدوات:** Supabase و Claude Code و Cloudflare (بدل Vercel).
+- **الـ Webhook:** Supabase Edge Function (`paymob-webhook`) بتسجل الدفعة بدالة Postgres (`record_payment`) عشان تبقى Idempotent.
 
 **اسم المنتج: لمبة (Lamba).** استبعدنا «Eduactive» لأنه قريب جدًا من Eduact، ودي شركة EdTech مصرية أبواب اشترتها في سبتمبر 2026. واخترنا «لمبة» لأن «اللمبة نوّرت» تعبير مصري معناه «فهمت»، والديمو نفسه فيه لمبة بتنوّر. واستبعدنا «فهّمني» كمان، لأنه قريب من منصة «فهيم» الموجودة.
 
@@ -127,7 +128,7 @@ export const COHORTS = {
 | F11 | زرار مخفي بيغيّر «النهارده» عشان الحكام يشوفوا السعر بيتغير | P1 |
 | F12 | صفحات السياسات وبيانات التواصل | P1 |
 
-**التقنية:** Next.js (App Router) و TypeScript و Tailwind، والواجهة عربي RTL ومتظبطة على الموبايل الأول. الداتا والتسجيل على Supabase (Postgres + Auth)، والنشر على Cloudflare Workers عن طريق OpenNext. المفاتيح السرية بـ wrangler secret، والتحقق من الـ HMAC بـ Web Crypto.
+**التقنية:** Next.js (App Router) و TypeScript و Tailwind، والواجهة عربي RTL ومتظبطة على الموبايل الأول. الداتا والتسجيل على Supabase (Postgres + Auth)، والنشر على Cloudflare Workers عن طريق OpenNext. المفاتيح السرية بـ wrangler secret، والتحقق من الـ HMAC بـ Web Crypto. والـ Webhook بتاع Paymob Supabase Edge Function.
 
 | الجدول | الأعمدة |
 | --- | --- |
@@ -137,7 +138,7 @@ export const COHORTS = {
 | subscriptions | user\_id, cohort, plan, status, current\_period\_end |
 | payments | id, user\_id, paymob\_transaction\_id (unique), amount\_cents, plan, success, raw (JSON) |
 
-**الـ APIs:** `GET /api/offer` · `POST /api/checkout` · `POST /api/paymob/webhook` · `GET /billing/result` · `POST /api/tutor/explain` · `POST /api/practice/generate`
+**الـ APIs:** `GET /api/offer` · `POST /api/checkout` · Supabase Edge Function `paymob-webhook` · `GET /billing/result` · `POST /api/tutor/explain` · `POST /api/practice/generate`
 
 **متغيرات البيئة:** `PAYMOB_SECRET_KEY` · `PAYMOB_PUBLIC_KEY` · `PAYMOB_CARD_INTEGRATION_ID` · `PAYMOB_HMAC_SECRET` · `AI_API_KEY` · `APP_URL` · مفاتيح Supabase
 
@@ -177,6 +178,7 @@ interactive simulations + an AI tutor that explains each student's own mistake.
 Scope: Physics, chapter "Electric current & Ohm's law", 3 lessons (lesson 1 free, 2-3 paid).
 
 Stack: Next.js (App Router) + TypeScript + Tailwind + Supabase (auth + Postgres). Deploy on Cloudflare Workers via OpenNext (@opennextjs/cloudflare). Secrets via wrangler; verify HMAC with Web Crypto.
+Use Supabase Edge Functions for the Paymob webhook and Postgres functions for idempotent writes.
 
 PAYMENTS (Paymob SANDBOX, one-time card payments ONLY, no recurring):
 Sell an exam-cohort pass, not a monthly subscription.
@@ -186,9 +188,9 @@ Sell an exam-cohort pass, not a monthly subscription.
 - GET /api/offer: active plan/price/end date/months left for the user's cohort.
 - POST /api/checkout {cohort}: server picks plan+price, creates Paymob payment intention
   (env: PAYMOB_SECRET_KEY, PAYMOB_PUBLIC_KEY, PAYMOB_CARD_INTEGRATION_ID, PAYMOB_HMAC_SECRET),
-  special_reference = userId:cohort:plan:timestamp, notification_url /api/paymob/webhook,
+  special_reference = userId:cohort:plan:timestamp, notification_url {SUPABASE_URL}/functions/v1/paymob-webhook,
   redirection_url /billing/result. Return the Unified Checkout URL (public key + client_secret).
-- POST /api/paymob/webhook: verify HMAC; on success insert payment (unique transaction id)
+- Supabase Edge Function paymob-webhook: verify HMAC; on success insert payment (unique transaction id)
   and set subscriptions.current_period_end = cohort accessEnd. Idempotent.
 - /billing/result: verify HMAC, show result in Arabic (fallback activation if webhook missed).
 - Paywall on locked lessons; /billing page with plan, end date, payment history.
@@ -216,7 +218,7 @@ Build the payment flow FIRST, then give me a test checklist.
 
 1. التسجيل في Paymob وناخد الـ Sandbox keys، ونسجل الحساب في فورم الإيفنت بنفس البيانات بالظبط.
 2. نعمل مشروع Supabase والجداول، ونقفل Confirm email.
-3. Claude Code يعمل الهيكل الأساسي بالبرومبت اللي في قسم 6، وننشر على Cloudflare على طول.
+3. Claude Code يعمل الهيكل الأساسي بالبرومبت اللي في قسم 6، وننشر على Cloudflare Workers على طول.
 4. نشغّل الدفع من الأول للآخر بكارت الاختبار.
 5. نبني الدروس والمحاكاة والمدرس الذكي ورا الـ Paywall.
 6. تجميد الفيتشرز، وبعده Payment Gate، وبروفة الـ Pitch.
