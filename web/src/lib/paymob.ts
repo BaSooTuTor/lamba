@@ -4,16 +4,31 @@ import "server-only";
 const INTENTION_URL = "https://accept.paymob.com/v1/intention/";
 const CHECKOUT_URL = "https://eg.checkout.paymob.com/";
 
-// MVP: one plan, priced by the server (see PRD pricing windows).
-export const CURRENT_PLAN = { cohort: "2027", plan: "full_year", amount_cents: 79900 };
+type BillingData = {
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone_number: string;
+};
 
 type IntentionInput = {
+  // Priced by the server from getOffer(), never by the client.
+  amountCents: number;
+  itemName: string;
+  billing: BillingData;
   reference: string;
   redirectionUrl: string;
   notificationUrl?: string;
 };
 
-export async function createCheckoutUrl({ reference, redirectionUrl, notificationUrl }: IntentionInput) {
+export async function createCheckoutUrl({
+  amountCents,
+  itemName,
+  billing,
+  reference,
+  redirectionUrl,
+  notificationUrl,
+}: IntentionInput) {
   const res = await fetch(INTENTION_URL, {
     method: "POST",
     headers: {
@@ -21,24 +36,24 @@ export async function createCheckoutUrl({ reference, redirectionUrl, notificatio
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      amount: CURRENT_PLAN.amount_cents,
+      amount: amountCents,
       currency: "EGP",
       payment_methods: [Number(env("PAYMOB_CARD_INTEGRATION_ID"))],
-      items: [{ name: `Lamba ${CURRENT_PLAN.cohort} ${CURRENT_PLAN.plan}`, amount: CURRENT_PLAN.amount_cents, quantity: 1 }],
-      // No real student data yet; Paymob requires billing fields.
-      billing_data: {
-        first_name: "Lamba",
-        last_name: "Student",
-        email: "student@example.com",
-        phone_number: "+201000000000",
-      },
+      items: [{ name: itemName, amount: amountCents, quantity: 1 }],
+      billing_data: billing,
       special_reference: reference,
       redirection_url: redirectionUrl,
       ...(notificationUrl && { notification_url: notificationUrl }),
     }),
   });
 
-  const body = (await res.json()) as { client_secret?: string; detail?: unknown };
+  const body = (await res.json()) as {
+    client_secret?: string;
+    id?: string;
+    // Paymob's order id for this intention; the webhook and redirect carry it under the HMAC.
+    intention_order_id?: number | string;
+    detail?: unknown;
+  };
   if (!res.ok || !body.client_secret) {
     throw new Error(`Paymob intention failed (${res.status}): ${JSON.stringify(body.detail ?? body)}`);
   }
@@ -46,7 +61,11 @@ export async function createCheckoutUrl({ reference, redirectionUrl, notificatio
   const url = new URL(CHECKOUT_URL);
   url.searchParams.set("publicKey", env("PAYMOB_PUBLIC_KEY"));
   url.searchParams.set("clientSecret", body.client_secret);
-  return url.toString();
+  return {
+    url: url.toString(),
+    orderId: body.intention_order_id != null ? String(body.intention_order_id) : null,
+    intentionId: body.id ?? null,
+  };
 }
 
 function env(name: string) {

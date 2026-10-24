@@ -30,6 +30,7 @@ export function hmacStringFromQuery(query: Record<string, string | undefined>): 
 
 // Webhook callback: the fields are nested inside the transaction object (`obj`).
 // deno-lint-ignore no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function hmacStringFromTransaction(obj: any): string {
   return FIELDS.map((f) => {
     const value =

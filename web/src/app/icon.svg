@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Lamba">
+  <title>Lamba · لمبة</title>
+  <style>
+    .halo { transform-box: fill-box; transform-origin: center; animation: halo 3s ease-in-out infinite; }
+    .glow { animation: glow 3s ease-in-out infinite; }
+    .rays { animation: rays 3s ease-in-out infinite; }
+    .wire { stroke-dasharray: 6 3; animation: flow 0.9s linear infinite; }
+    @keyframes halo { 0%, 100% { opacity: 0.12; transform: scale(0.8); } 50% { opacity: 0.45; transform: scale(1.1); } }
+    @keyframes glow { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+    @keyframes rays { 0%, 25%, 75%, 100% { opacity: 0; } 50% { opacity: 1; } }
+    @keyframes flow { to { stroke-dashoffset: -9; } }
+    @media (prefers-reduced-motion: reduce) {
+      .halo, .glow, .rays, .wire { animation: none; }
+      .glow { opacity: 1; }
+      .halo { opacity: 0.3; }
+      .rays { opacity: 0; }
+    }
+  </style>
+  <!-- The bulb dims and brightens as if a voltage slider moves; current flows along the resistor filament. -->
+  <circle class="halo" cx="50" cy="44" r="31" fill="#EAB308"/>
+  <g class="rays" stroke="#EAB308" stroke-width="4" stroke-linecap="round">
+    <line x1="50" y1="11" x2="50" y2="4"/>
+    <line x1="26.7" y1="20.7" x2="21.7" y2="15.7"/>
+    <line x1="73.3" y1="20.7" x2="78.3" y2="15.7"/>
+    <line x1="17" y1="44" x2="10" y2="44"/>
+    <line x1="83" y1="44" x2="90" y2="44"/>
+  </g>
+  <circle cx="50" cy="44" r="24" fill="#F2E2A4"/>
+  <circle class="glow" cx="50" cy="44" r="24" fill="#EAB308"/>
+  <polyline class="wire" points="38,46 42,37 46,51 50,37 54,51 58,37 62,46" fill="none" stroke="#06144D" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+  <rect x="39" y="71" width="22" height="6" rx="3" fill="#06144D"/>
+  <rect x="42" y="80" width="16" height="6" rx="3" fill="#06144D"/>
+</svg>

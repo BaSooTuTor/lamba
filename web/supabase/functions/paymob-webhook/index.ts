@@ -3,6 +3,8 @@
 import "@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "@supabase/supabase-js";
 import { hmacStringFromTransaction, verifyHmac } from "../_shared/paymob-hmac.ts";
+import { MISSING_HMAC_SECRET } from "../_shared/paymob-reference.ts";
+import { findCheckout, paymentArgs } from "../_shared/paymob-checkout.ts";
 
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL")!,
@@ -22,20 +24,20 @@ Deno.serve(async (req) => {
     return Response.json({ ignored: true });
   }
 
-  const ok = await verifyHmac(hmacStringFromTransaction(tx), hmac, Deno.env.get("PAYMOB_HMAC_SECRET")!);
+  const secret = Deno.env.get("PAYMOB_HMAC_SECRET");
+  if (!secret) return Response.json({ error: MISSING_HMAC_SECRET }, { status: 500 });
+
+  const ok = await verifyHmac(hmacStringFromTransaction(tx), hmac, secret);
   if (!ok) return Response.json({ error: "Invalid HMAC" }, { status: 401 });
 
-  // special_reference = userId:cohort:plan:timestamp (set in /api/checkout).
-  const reference: string = tx.order?.merchant_order_id ?? "";
-  const plan = reference.split(":")[2] ?? "unknown";
+  // Who paid comes from our checkouts table, looked up by the HMAC-covered order id.
+  const checkout = await findCheckout(supabase, tx.order?.id, tx.order?.merchant_order_id);
+  if (!checkout) console.error("paymob-webhook: no checkout for order", tx.order?.id);
 
-  const { error } = await supabase.rpc("record_payment", {
-    p_transaction_id: String(tx.id),
-    p_amount_cents: tx.amount_cents,
-    p_plan: plan,
-    p_success: tx.success === true,
-    p_raw: body,
-  });
+  const { error } = await supabase.rpc(
+    "record_payment",
+    paymentArgs(checkout, { id: tx.id, amount_cents: tx.amount_cents, success: tx.success === true }, body),
+  );
 
   if (error) return Response.json({ error: error.message }, { status: 500 });
   return Response.json({ received: true });

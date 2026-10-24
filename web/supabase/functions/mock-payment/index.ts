@@ -9,6 +9,8 @@ type Notification = {
   amount_cents: number;
   plan: string;
   success: boolean;
+  user_id: string;
+  cohort: string;
 };
 
 export default {
@@ -19,7 +21,7 @@ export default {
     }
 
     const n = (await req.json()) as Notification;
-    if (!n.transaction_id || !Number.isInteger(n.amount_cents) || !n.plan) {
+    if (!n.transaction_id || !Number.isInteger(n.amount_cents) || !n.plan || !n.user_id || !n.cohort) {
       return Response.json({ error: "Invalid notification" }, { status: 400 });
     }
 
@@ -29,6 +31,8 @@ export default {
       p_plan: n.plan,
       p_success: n.success,
       p_raw: { ...n, mock: true },
+      p_user_id: n.user_id,
+      p_cohort: n.cohort,
     });
 
     if (error) return Response.json({ error: error.message }, { status: 500 });
