@@ -7,6 +7,7 @@ export type Profile = {
   name: string | null;
   phone: string | null;
   exam_cohort: string;
+  track: "science" | "math" | null;
 };
 
 // The signed-in user (verified with Supabase Auth), or null.
@@ -20,7 +21,7 @@ export const getProfile = cache(async (userId: string) => {
   const supabase = await createClient();
   const { data } = await supabase
     .from("profiles")
-    .select("id, name, phone, exam_cohort")
+    .select("id, name, phone, exam_cohort, track")
     .eq("id", userId)
     .maybeSingle<Profile>();
   return data;

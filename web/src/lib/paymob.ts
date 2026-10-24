@@ -47,7 +47,13 @@ export async function createCheckoutUrl({
     }),
   });
 
-  const body = (await res.json()) as { client_secret?: string; detail?: unknown };
+  const body = (await res.json()) as {
+    client_secret?: string;
+    id?: string;
+    // Paymob's order id for this intention; the webhook and redirect carry it under the HMAC.
+    intention_order_id?: number | string;
+    detail?: unknown;
+  };
   if (!res.ok || !body.client_secret) {
     throw new Error(`Paymob intention failed (${res.status}): ${JSON.stringify(body.detail ?? body)}`);
   }
@@ -55,7 +61,11 @@ export async function createCheckoutUrl({
   const url = new URL(CHECKOUT_URL);
   url.searchParams.set("publicKey", env("PAYMOB_PUBLIC_KEY"));
   url.searchParams.set("clientSecret", body.client_secret);
-  return url.toString();
+  return {
+    url: url.toString(),
+    orderId: body.intention_order_id != null ? String(body.intention_order_id) : null,
+    intentionId: body.id ?? null,
+  };
 }
 
 function env(name: string) {
