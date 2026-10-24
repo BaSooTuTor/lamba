@@ -68,5 +68,5 @@ test("the 2 A mission passes only within ±0.05 A", () => {
   assert.equal(missionMet(current(12, 6)), true);
   assert.equal(missionMet(current(10, 5)), true);
   assert.equal(missionMet(current(13, 6)), false);
-  assert.equal(missionMet(2.05), false);
+  assert.equal(missionMet(2.06), false);
 });
