@@ -1,11 +1,11 @@
 # برومبتات Claude Code
 
-غيّروا `[PRODUCT NAME]` بعد ما تقفلوا الاسم، والصقوا البرومبت الأول في أول رسالة.
+الصقوا البرومبت الأول في أول رسالة.
 
 ## 1. الهيكل الأساسي والدفع
 
 ```text
-We are building [PRODUCT NAME] for a 4-hour hackathon (Paymob x ALX EdTech Build Night).
+We are building Lamba (لمبة) for a 4-hour hackathon (Paymob x ALX EdTech Build Night).
 Interactive Arabic-first (RTL, mobile-first) learning platform for Egyptian Thanaweya Amma students:
 interactive simulations + an AI tutor that explains each student's own mistake.
 Scope: Physics, chapter "Electric current & Ohm's law", 3 lessons (lesson 1 free, 2-3 paid).

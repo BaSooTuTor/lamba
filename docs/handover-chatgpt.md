@@ -1,4 +1,4 @@
-# Handover لـ ChatGPT — فهّمني
+# Handover لـ ChatGPT — لمبة (Lamba)
 
 Oct 24, 2026 · @Abdulbasit
 
@@ -61,7 +61,7 @@ Oct 24, 2026 · @Abdulbasit
 | Supabase مش Convex | التسجيل جاهز، و Claude Code عارفه كويس، و Postgres مش بيربطنا بمزوّد |
 | البناء بـ Claude Code، والنشر على Vercel من أول نص ساعة | الـ Webhook محتاج URL عام |
 
-**الاسم لسه متقفلش.** الاسم المؤقت «فهّمني». استبعدنا «Eduactive» لأنه قريب جدًا من Eduact، ودي شركة EdTech مصرية أبواب اشترتها في سبتمبر 2026. الترشيح: «لمبة» (Lamba)، لأن «اللمبة نوّرت» تعبير مصري معناه «فهمت»، والديمو نفسه فيه لمبة بتنوّر. بدائل تانية: فهّمني، ومعمل، وشوفها، وتجربة.
+**اسم المنتج: لمبة (Lamba).** استبعدنا «Eduactive» لأنه قريب جدًا من Eduact، ودي شركة EdTech مصرية أبواب اشترتها في سبتمبر 2026. واخترنا «لمبة» لأن «اللمبة نوّرت» تعبير مصري معناه «فهمت»، والديمو نفسه فيه لمبة بتنوّر. واستبعدنا «فهّمني» كمان، لأنه قريب من منصة «فهيم» الموجودة.
 
 ## 4. التسعير والدفع
 
@@ -162,7 +162,7 @@ export const COHORTS = {
 **البرومبت الجاهز لـ Claude Code** (الفريق بيبني بيه):
 
 ```text
-We are building [PRODUCT NAME] for a 4-hour hackathon (Paymob x ALX EdTech Build Night).
+We are building Lamba (لمبة) for a 4-hour hackathon (Paymob x ALX EdTech Build Night).
 Interactive Arabic-first (RTL, mobile-first) learning platform for Egyptian Thanaweya Amma students:
 interactive simulations + an AI tutor that explains each student's own mistake.
 Scope: Physics, chapter "Electric current & Ohm's law", 3 lessons (lesson 1 free, 2-3 paid).
@@ -215,7 +215,7 @@ Build the payment flow FIRST, then give me a test checklist.
 
 **الأسئلة المفتوحة**
 
-- [ ] اسم المنتج النهائي (الترشيح «لمبة»)
+- [x] اسم المنتج اتقفل: لمبة (Lamba)
 - [ ] نسأل Paymob: الباقة اللي بتتدفع مرة واحدة بتتحسب «اشتراك» لو سجلنا بالبطاقة بس؟
 - [ ] الأسعار النهائية
 - [ ] تاريخ نهاية دفعة 2027 بعد ما جدول الامتحانات يتعلن
