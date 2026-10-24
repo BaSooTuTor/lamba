@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>السؤال والمدرس الذكي</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2F5BEA}a:hover{color:#1D3FB8}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 52px 24px 32px; display: flex; flex-direction: column; gap: 18px; background: #FFFFFF; color: #1F2328; font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif; direction: rtl">
+  <div style="display: flex; align-items: center; gap: 12px">
+    <a href="Home.dc.html" aria-label="إغلاق الدرس" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #1F2328">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </a>
+    <div style="flex-grow: 1; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px">
+      <div style="height: 6px; border-radius: 999px; background: {{accent}}"></div>
+      <div style="height: 6px; border-radius: 999px; background: {{accent}}"></div>
+      <div style="height: 6px; border-radius: 999px; background: {{accent}}"></div>
+      <div style="height: 6px; border-radius: 999px; background: #E3E5E9"></div>
+      <div style="height: 6px; border-radius: 999px; background: #E3E5E9"></div>
+    </div>
+    <div style="font-size: 12px; color: #5B616B">3 / 5</div>
+  </div>
+  <div style="font-size: 12px; font-weight: 600; color: #5B616B">سؤال بنظام الامتحان</div>
+  <h1 style="margin: 0; font-size: 19px; line-height: 1.6; font-weight: 700">دايرة فيها بطارية جهدها 12 فولت ومقاومة 6 أوم. التيار المار فيها يساوي؟</h1>
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+    <button type="button" style="height: 56px; border-radius: 12px; border: 2px solid #B42318; background: #FDECEA; font: inherit; font-size: 17px; font-weight: 700; color: #1F2328; direction: ltr">72 A</button>
+    <button type="button" style="height: 56px; border-radius: 12px; border: 1.5px solid #C9CDD3; background: #FFFFFF; font: inherit; font-size: 17px; color: #1F2328; direction: ltr">2 A</button>
+    <button type="button" style="height: 56px; border-radius: 12px; border: 1.5px solid #C9CDD3; background: #FFFFFF; font: inherit; font-size: 17px; color: #1F2328; direction: ltr">0.5 A</button>
+    <button type="button" style="height: 56px; border-radius: 12px; border: 1.5px solid #C9CDD3; background: #FFFFFF; font: inherit; font-size: 17px; color: #1F2328; direction: ltr">18 A</button>
+  </div>
+  <div style="font-size: 13px; font-weight: 600; color: #B42318">إجابتك مش صح، بس فيه سبب واضح.</div>
+  <section style="border: 1.5px solid #D8DBE0; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 12px; background: #FAFAFB">
+    <div style="display: flex; align-items: center; gap: 10px">
+      <div style="width: 36px; height: 36px; border-radius: 50%; border: 1.5px dashed #9AA0A8; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #5B616B">AI</div>
+      <div style="display: flex; flex-direction: column">
+        <div style="font-size: 15px; font-weight: 700">المدرس الذكي</div>
+        <div style="font-size: 12px; color: #5B616B">شاف إنك كنت حاطط V = 12 و R = 6</div>
+      </div>
+    </div>
+    <p style="margin: 0; font-size: 15px; line-height: 1.8">إنت ضربت الجهد في المقاومة. لكن في قانون أوم التيار بيقل لما المقاومة تزيد، يعني العلاقة بينهم مش ضرب.</p>
+    <div style="border-radius: 10px; background: #EEF2FD; padding: 10px 12px; font-size: 14px; line-height: 1.7"><span style="font-weight: 700">جرّب:</span> ارجع للمحاكاة، وزوّد المقاومة لـ 12 وشوف الأميتر بيعمل إيه.</div>
+  </section>
+  <div style="margin-top: auto; display: flex; flex-direction: column; gap: 10px">
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+      <a href="Lesson.dc.html" style="height: 52px; border-radius: 12px; border: 1.5px solid #C9CDD3; color: #1F2328; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600">ارجع للمحاكاة</a>
+      <a href="Tutor.dc.html" style="height: 52px; border-radius: 12px; background: {{accent}}; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700">جاوب تاني</a>
+    </div>
+    <a href="Paywall.dc.html" style="text-align: center; font-size: 13px; padding: 8px">الدرس التالي: قانون أوم (للمشتركين)</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#2F5BEA","options":["#2F5BEA","#0F7B6C","#B45309"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#2F5BEA' };
+  }
+}
+</script>
+</body>
+</html>

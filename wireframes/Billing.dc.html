@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>اشتراكي</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2F5BEA}a:hover{color:#1D3FB8}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #FFFFFF; color: #1F2328; font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif; direction: rtl">
+  <div style="padding: 56px 24px 0; display: flex; flex-direction: column; gap: 18px; flex-grow: 1">
+    <h1 style="margin: 0; font-size: 24px; font-weight: 700">اشتراكي</h1>
+    <section style="border: 2px solid {{accent}}; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px">
+        <div style="display: flex; flex-direction: column; gap: 2px">
+          <div style="font-size: 16px; font-weight: 700">باقة الثانوية العامة 2027</div>
+          <div style="font-size: 13px; color: #5B616B">السنة كاملة · دفعة واحدة</div>
+        </div>
+        <div style="font-size: 12px; font-weight: 700; color: #0F7B6C; border: 1.5px solid #0F7B6C; border-radius: 999px; padding: 2px 10px">سارية</div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <div style="display: flex; justify-content: space-between; font-size: 13px"><span style="color: #5B616B">من 24 أكتوبر 2026</span><span style="font-weight: 700">حتى 31 أغسطس 2027</span></div>
+        <div style="height: 8px; border-radius: 999px; background: #EDEFF2; overflow: hidden"><div style="width: 2%; height: 100%; background: {{accent}}"></div></div>
+        <div style="font-size: 12px; color: #5B616B">فاضل 311 يوم · الدور التاني داخل في الباقة</div>
+      </div>
+    </section>
+    <section style="display: flex; flex-direction: column; gap: 10px">
+      <h2 style="margin: 0; font-size: 16px; font-weight: 700">سجل المدفوعات</h2>
+      <div style="border: 1.5px solid #D8DBE0; border-radius: 12px; overflow: hidden">
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 10px 14px; background: #F2F3F5; font-size: 12px; font-weight: 600; color: #5B616B">
+          <div>التاريخ</div><div>المبلغ</div><div>الحالة</div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 12px 14px; font-size: 14px">
+          <div>24 أكتوبر 2026</div><div style="font-weight: 600">799 ج</div><div style="color: #0F7B6C; font-weight: 600">ناجحة</div>
+        </div>
+      </div>
+    </section>
+    <section style="display: flex; flex-direction: column; gap: 4px; font-size: 14px">
+      <h2 style="margin: 0 0 6px; font-size: 16px; font-weight: 700">مساعدة</h2>
+      <a href="Billing.dc.html" style="padding: 10px 0; border-bottom: 1.5px solid #EDEFF2; text-decoration: none; color: #1F2328">طلب استرجاع (خلال 14 يوم)</a>
+      <a href="Billing.dc.html" style="padding: 10px 0; border-bottom: 1.5px solid #EDEFF2; text-decoration: none; color: #1F2328">سياسة الاسترجاع والإرجاع</a>
+      <a href="Billing.dc.html" style="padding: 10px 0; border-bottom: 1.5px solid #EDEFF2; text-decoration: none; color: #1F2328">سياسة الخصوصية</a>
+      <a href="Billing.dc.html" style="padding: 10px 0; text-decoration: none; color: #1F2328">تواصل معنا: [رقم التليفون] · [الإيميل]</a>
+    </section>
+  </div>
+  <nav style="height: 72px; border-top: 1.5px solid #E3E5E9; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: center; text-align: center; font-size: 12px">
+    <a href="Home.dc.html" style="color: #5B616B; text-decoration: none">الدروس</a>
+    <a href="Home.dc.html" style="color: #5B616B; text-decoration: none">التقدم</a>
+    <a href="Billing.dc.html" style="color: {{accent}}; font-weight: 700; text-decoration: none">حسابي</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#2F5BEA","options":["#2F5BEA","#0F7B6C","#B45309"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#2F5BEA' };
+  }
+}
+</script>
+</body>
+</html>

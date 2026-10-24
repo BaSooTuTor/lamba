@@ -1,0 +1,514 @@
+<title>خطة Build Night</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Readex+Pro:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a single reading column, a sticky section nav, and a time rail for the roadmap — a team field-guide you scroll on your phone during the event */
+:root{
+  --bg:#f4f6fb; --surface:#ffffff; --ink:#121a33; --muted:#5a6482; --line:#dde2ee;
+  --accent:#2747d6; --accent-soft:#e6ebff; --warn:#a86500; --warn-soft:#fff3dc;
+  --bad:#b4232c; --bad-soft:#fde8ea; --good:#17794a; --good-soft:#e2f5ea;
+  --code-bg:#0f1530; --code-fg:#dfe6ff;
+  --f-display:"Readex Pro","IBM Plex Sans Arabic",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans Arabic",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0d1120; --surface:#151b30; --ink:#e8ecf8; --muted:#9aa4c4; --line:#262f4d;
+  --accent:#8aa2ff; --accent-soft:#1d2752; --warn:#f0b54c; --warn-soft:#2d2412;
+  --bad:#ff7f88; --bad-soft:#341a20; --good:#5fd39a; --good-soft:#12301f;
+  --code-bg:#080b17; --code-fg:#dfe6ff; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d1120; --surface:#151b30; --ink:#e8ecf8; --muted:#9aa4c4; --line:#262f4d;
+  --accent:#8aa2ff; --accent-soft:#1d2752; --warn:#f0b54c; --warn-soft:#2d2412;
+  --bad:#ff7f88; --bad-soft:#341a20; --good:#5fd39a; --good-soft:#12301f;
+  --code-bg:#080b17; --code-fg:#dfe6ff; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.75;direction:rtl}
+.wrap{max-width:920px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 80px}
+h1,h2,h3{font-family:var(--f-display);line-height:1.3;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.7rem,4.5vw,2.4rem)}
+h2{font-size:1.45rem}
+h3{font-size:1.08rem}
+p{margin:0}
+.ltr{direction:ltr;unicode-bidi:isolate;display:inline-block}
+code,.mono{font-family:var(--f-mono);font-size:.88em}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* header */
+.hero{display:grid;gap:14px;padding-block:8px 22px;border-bottom:1px solid var(--line)}
+.eyebrow{font-size:.78rem;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.lede{color:var(--muted);max-width:62ch}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:6px}
+.fact{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.fact b{display:block;font-family:var(--f-display);font-size:1.25rem}
+.fact span{font-size:.85rem;color:var(--muted)}
+
+/* nav */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:8px max(16px,env(safe-area-inset-left,0px));overflow-x:auto;white-space:nowrap}
+nav.toc a{display:inline-block;padding:4px 10px;margin-left:4px;border-radius:999px;text-decoration:none;color:var(--muted);font-size:.88rem}
+nav.toc a:hover{background:var(--accent-soft);color:var(--accent)}
+
+section{padding-top:36px;display:grid;gap:16px}
+.sec-head{display:grid;gap:4px}
+.sec-head p{color:var(--muted)}
+
+/* callouts */
+.callout{border-radius:10px;padding:14px 16px;display:grid;gap:6px;border:1px solid}
+.callout.warn{background:var(--warn-soft);border-color:color-mix(in srgb,var(--warn) 35%,transparent)}
+.callout.bad{background:var(--bad-soft);border-color:color-mix(in srgb,var(--bad) 35%,transparent)}
+.callout.good{background:var(--good-soft);border-color:color-mix(in srgb,var(--good) 35%,transparent)}
+.callout .tag{font-size:.75rem;font-weight:700;letter-spacing:.06em}
+.callout.warn .tag{color:var(--warn)} .callout.bad .tag{color:var(--bad)} .callout.good .tag{color:var(--good)}
+
+/* rule list */
+.rules{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.rule{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;gap:4px;align-content:start}
+.rule h3{font-size:1rem}
+.rule p{color:var(--muted);font-size:.94rem}
+
+/* verticals */
+.verts{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(380px,1fr))}
+@media (max-width:440px){.verts{grid-template-columns:1fr}}
+.vert{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;gap:8px;align-content:start;min-width:0}
+.vert .num{font-family:var(--f-mono);font-size:.78rem;color:var(--accent)}
+.vert ul{margin:0;padding-inline-start:18px;color:var(--muted);font-size:.93rem;display:grid;gap:2px}
+
+/* ideas table */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:720px;font-size:.92rem}
+th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.78rem;color:var(--muted);font-weight:600;letter-spacing:.04em;background:color-mix(in srgb,var(--bg) 60%,var(--surface))}
+tr:last-child td{border-bottom:0}
+td.idea b{font-family:var(--f-display);display:block}
+td.idea small{color:var(--muted);display:block;line-height:1.55}
+.vpill{font-family:var(--f-mono);font-size:.75rem;background:var(--accent-soft);color:var(--accent);border-radius:6px;padding:2px 7px;white-space:nowrap}
+.dots{display:inline-flex;gap:3px;direction:ltr}
+.dots i{width:9px;height:9px;border-radius:50%;background:var(--line);display:block}
+.dots[data-v="1"] i:nth-child(-n+1),.dots[data-v="2"] i:nth-child(-n+2),.dots[data-v="3"] i:nth-child(-n+3),.dots[data-v="4"] i:nth-child(-n+4),.dots[data-v="5"] i:nth-child(-n+5){background:var(--accent)}
+td.total{font-family:var(--f-display);font-weight:700;font-variant-numeric:tabular-nums}
+tr.pick{background:color-mix(in srgb,var(--good-soft) 70%,transparent)}
+tr.backup{background:color-mix(in srgb,var(--accent-soft) 55%,transparent)}
+.badge{display:inline-block;font-size:.72rem;font-weight:700;border-radius:999px;padding:1px 8px;margin-top:4px}
+.badge.p{background:var(--good);color:var(--surface)}
+.badge.b{background:var(--accent);color:var(--surface)}
+
+/* picks */
+.picks{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.pickcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:10px;align-content:start;min-width:0}
+.pickcard.primary{border-color:var(--good);box-shadow:0 0 0 1px var(--good) inset}
+.pickcard .one{font-family:var(--f-display);font-size:1.05rem;color:var(--accent)}
+.pickcard dl{margin:0;display:grid;gap:6px}
+.pickcard dt{font-size:.78rem;color:var(--muted);font-weight:600}
+.pickcard dd{margin:0;font-size:.94rem}
+
+/* roadmap */
+.rail{display:grid;gap:0;position:relative}
+.step{display:grid;grid-template-columns:92px 1fr;gap:14px;position:relative;padding-bottom:18px}
+.step::before{content:"";position:absolute;right:45px;top:30px;bottom:0;width:2px;background:var(--line)}
+.step:last-child::before{display:none}
+.time{font-family:var(--f-mono);font-size:.8rem;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:4px 6px;text-align:center;height:fit-content;position:relative;z-index:1;direction:ltr;font-variant-numeric:tabular-nums}
+.step.event .time{background:var(--warn-soft);border-color:var(--warn);color:var(--warn);font-weight:600}
+.step.gate .time{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);font-weight:600}
+.body{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:6px;min-width:0}
+.step.event .body{border-style:dashed;border-color:var(--warn)}
+.step.gate .body{border-style:dashed;border-color:var(--bad)}
+.body ul{margin:0;padding-inline-start:18px;display:grid;gap:2px;font-size:.94rem}
+.body .done{font-size:.85rem;color:var(--good);font-weight:600}
+@media (max-width:480px){.step{grid-template-columns:72px 1fr;gap:10px}.step::before{right:35px}}
+
+/* roles */
+.roles{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.role{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:6px;align-content:start}
+.role .who{font-family:var(--f-mono);font-size:.78rem;color:var(--accent)}
+.role ul{margin:0;padding-inline-start:18px;font-size:.92rem;color:var(--muted)}
+
+/* flow */
+.flow{display:grid;gap:8px}
+.fstep{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.fstep .n{font-family:var(--f-mono);width:30px;height:30px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:600}
+.fstep p{font-size:.94rem;color:var(--muted)}
+.fstep h3{font-size:.98rem}
+
+pre{margin:0;background:var(--code-bg);color:var(--code-fg);border-radius:10px;padding:16px;overflow-x:auto;font-family:var(--f-mono);font-size:.82rem;line-height:1.6;direction:ltr;text-align:left;white-space:pre}
+.codebox{display:grid;gap:8px}
+.codebar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.codebar span{font-size:.85rem;color:var(--muted)}
+button.copy{font:inherit;font-size:.85rem;border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:8px;padding:4px 12px;cursor:pointer}
+button.copy:hover{background:var(--accent-soft)}
+
+/* deck */
+.deck{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.slide{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:4px;align-content:start;aspect-ratio:auto}
+.slide .sn{font-family:var(--f-mono);font-size:.75rem;color:var(--muted)}
+.slide p{font-size:.9rem;color:var(--muted)}
+.slide.demo{border-color:var(--good);background:var(--good-soft)}
+
+/* checklist */
+.check{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:6px 4px}
+.check label{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;cursor:pointer;border-radius:8px}
+.check label:hover{background:var(--bg)}
+.check input{margin-top:6px;accent-color:var(--good);width:17px;height:17px;flex:none}
+.check input:checked + span{color:var(--muted);text-decoration:line-through}
+.progress{font-size:.88rem;color:var(--muted)}
+.progress b{color:var(--good);font-variant-numeric:tabular-nums}
+
+.risks{display:grid;gap:8px}
+.risk{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:.93rem}
+.risk b{display:block}
+.risk .fix{color:var(--muted)}
+@media (max-width:560px){.risk{grid-template-columns:1fr}}
+
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:.85rem;color:var(--muted);display:grid;gap:4px}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+
+<div class="wrap">
+
+<header class="hero">
+  <div class="eyebrow">PAYMOB × ALX · EDTECH BUILD NIGHT</div>
+  <h1>خطة الفريق لـ Build Night</h1>
+  <p class="lede">تحليل كامل للمطلوب من الملف، وعصف ذهني لأفكار في الـ 4 فرتكالات، والرود ماب ساعة بساعة، وطريقة بناء اشتراك شهري وسنوي على Paymob Sandbox.</p>
+  <div class="facts">
+    <div class="fact"><b>4 ساعات</b><span>للمنتج والـ Pitch Deck</span></div>
+    <div class="fact"><b>4 أفراد</b><span>فريق عشوائي، إنتوا اللي بتقسموا الأدوار</span></div>
+    <div class="fact"><b>10 دقايق</b><span>عرض 6–7 + أسئلة 3–4</span></div>
+    <div class="fact"><b>3 فرق</b><span>أقصى عدد في نفس الفرتكال</span></div>
+  </div>
+</header>
+
+<nav class="toc" aria-label="أقسام الصفحة">
+  <a href="#rules">القواعد</a><a href="#subs">الاشتراكات</a><a href="#verticals">الفرتكالات</a><a href="#ideas">الأفكار</a><a href="#picks">الترشيح</a><a href="#roadmap">الرود ماب</a><a href="#roles">الأدوار</a><a href="#tech">التقنية</a><a href="#prompt">برومبت Claude Code</a><a href="#pitch">الـ Pitch</a><a href="#gate">Payment Gate</a><a href="#risks">المخاطر</a>
+</nav>
+
+<!-- RULES -->
+<section id="rules">
+  <div class="sec-head">
+    <h2>المطلوب بالظبط</h2>
+    <p>دي القواعد اللي بتحدد مين يكسب ومين يتشال من المنافسة.</p>
+  </div>
+  <div class="rules">
+    <div class="rule"><h3>القاعدة الوحيدة الثابتة</h3><p>المنتج يبقى أي حاجة جوه الفرتكال، بس <b>لازم يكسب فلوس بـ Payment Flow شغال على Paymob (Sandbox)</b>. الدفع ممكن يكون جزء صغير من المنتج.</p></div>
+    <div class="rule"><h3>Payment Gate</h3><p>قبل ما وقت البناء يخلص، فريق Paymob هيراجع Checklist مع كل فريق. <b>ده اللي بيحدد إنتوا مؤهلين للجوايز ولا لأ.</b></p></div>
+    <div class="rule"><h3>الـ Pitch</h3><p>تمشوا على الـ Template بتاعهم (البزنس موديل، الحل، Live Demo) و<b>عملية دفع ناجحة قدام الحكام</b>. التقييم بيحصل بعد العرض على طول.</p></div>
+    <div class="rule"><h3>4 جوايز، جايزة واحدة لكل فريق</h3><p>Best Overall · Best Use of AI · Best Pitch · Best Standalone Product. يعني الـ AI لازم يكون جوهري في المنتج، مش ديكور.</p></div>
+    <div class="rule"><h3>Standup 1: قفل الفكرة</h3><p>20 ثانية: الفرتكال + المنتج لمين + بيعمل إيه في جملة واحدة. هنا بيطبقوا حد الـ 3 فرق في الفرتكال، فلازم يبقى معاكم فكرة بديلة.</p></div>
+    <div class="rule"><h3>Standup 2 و Swap-and-test</h3><p>Standup 2 فيه: إيه اللي شغال، وإيه الواقف، ومحتاجين إيه. وفي Swap-and-test واحد بس منكم يروح يجرب منتج فريق تاني 5 دقايق، وإجابات الـ Tester بتدخل في سلايد البزنس موديل.</p></div>
+  </div>
+  <div class="callout bad">
+    <div class="tag">ممنوع عند Paymob</div>
+    <p><b>Dropshipping</b>، و<b>بيع Tokens أو Credits رقمية</b> بتتصرف على خدمات أو In-app purchases، وكل أشكال <b>Gaming monetization</b>. يعني موديل زي «اشتري 100 كريديت AI» <b>مرفوض</b>. اشتغلوا بـ «اشتراك بالمدة» أو «دفع لكل خدمة».</p>
+  </div>
+</section>
+
+<!-- SUBSCRIPTIONS -->
+<section id="subs">
+  <div class="sec-head">
+    <h2>الاشتراك الشهري والسنوي: النقطة الأهم</h2>
+  </div>
+  <div class="callout warn">
+    <div class="tag">مكتوبة صريح في الملف</div>
+    <p>الـ Sandbox بيدعم <b>الدفع مرة واحدة بالكارت بس</b>. مفيش Subscriptions ولا Split payouts ولا BNPL ولا تقسيط. وكمان التسجيل كتاجر بالبطاقة الشخصية بس <b>مينفعش معاه موديل اشتراك</b> بعدين.</p>
+  </div>
+  <div class="callout good">
+    <div class="tag">الحل اللي هنعمله</div>
+    <p><b>«باقة بمدة» (Access Pass)</b>: المستخدم يختار شهري أو سنوي ويدفع دفعة واحدة. لما الـ Webhook يأكد الدفع، الداتابيز بتسجل <span class="ltr mono">current_period_end</span> = النهارده + 30 أو 365 يوم. الـ Paywall بيقفل المميزات لما المدة تخلص، وزرار «جدّد» بيعمل دفعة جديدة.</p>
+    <p>ده نفس اللي Paymob نفسهم نصحوا بيه: «اعملوا الـ One-time flow النهارده واحنا هنساعدكم تمدّوه بعد الإيفنت». في الـ Pitch قولوا: «بعد التسجيل كشركة هننقل لـ Recurring billing».</p>
+  </div>
+  <div class="rules">
+    <div class="rule"><h3>مثال تسعير</h3><p>شهري <b>99 ج</b> · سنوي <b>699 ج</b> (توفير ~41%). المبالغ بتتبعت لـ Paymob بالقرش: <span class="ltr mono">9900</span> و <span class="ltr mono">69900</span>.</p></div>
+    <div class="rule"><h3>إضافة بتفرق في الديمو</h3><p>صفحة <b>Billing</b> فيها الباقة الحالية وتاريخ الانتهاء وسجل المدفوعات. بتخلي الاشتراك «حقيقي» قدام الحكام.</p></div>
+  </div>
+</section>
+
+<!-- VERTICALS -->
+<section id="verticals">
+  <div class="sec-head">
+    <h2>الـ 4 فرتكالات والمشاكل المعروضة</h2>
+    <p>ينفع تختاروا مشكلة منهم أو تحددوا مشكلة تانية جوه نفس الفرتكال.</p>
+  </div>
+  <div class="verts">
+    <div class="vert"><span class="num">VERTICAL 01</span><h3>التحضير للامتحانات المصيرية</h3><p style="font-size:.9rem">طلاب الثانوي (الثانوية العامة)</p>
+      <ul><li>بيحلوا امتحانات سابقة كتير من غير ما يعرفوا إيه المواضيع اللي بيقعوا فيها</li><li>الأهالي بيدفعوا دروس خصوصي عشان النظام والمتابعة، مش عشان محتوى جديد</li><li>بيذاكروا لوحدهم بالليل ومفيش حد يصحح لهم</li></ul></div>
+    <div class="vert"><span class="num">VERTICAL 02</span><h3>اقتصاد الدروس الخصوصية</h3><p style="font-size:.9rem">المدرسين الفري لانس والسناتر والأهالي</p>
+      <ul><li>المواعيد والغياب والواجب وتحصيل الفلوس كلها على واتساب وورق</li><li>المدرس الكويس بيتعرف بالكلام بس، والجديد مش لاقي طلاب</li><li>الأهل مش شايفين إن الفلوس اللي بيدفعوها جايبة نتيجة</li></ul></div>
+    <div class="vert"><span class="num">VERTICAL 03</span><h3>المدرسين والفصول المزدحمة</h3><p style="font-size:.9rem">مدرسين المدارس ومساعديهم</p>
+      <ul><li>مدرس واحد مش قادر يدي Feedback فردي لـ 60+ طالب</li><li>تحضير الدروس متكرر، والمواد الجاهزة مش ماشية على المنهج المصري</li><li>الأهل بيعرفوا مستوى ابنهم يوم النتيجة بس</li></ul></div>
+    <div class="vert"><span class="num">VERTICAL 04</span><h3>توظيف الخريجين</h3><p style="font-size:.9rem">طلاب الجامعة والخريجين الجداد</p>
+      <ul><li>معاهم شهادات بس مفيش إثبات إنهم يعرفوا يشتغلوا</li><li>اللي بيتعلموا لوحدهم بيسيبوا الكورسات في النص</li><li>التحضير للإنترفيو تخمين، خصوصًا الإنترفيو بالإنجليزي</li></ul></div>
+  </div>
+</section>
+
+<!-- IDEAS -->
+<section id="ideas">
+  <div class="sec-head">
+    <h2>العصف الذهني: 8 أفكار متقيّمة</h2>
+    <p>التقييم من 5 على 4 معايير هي اللي الحكام بيدوروا عليها: قوة الـ AI، وسهولة الديمو في 4 ساعات، والناس هتدفع ولا لأ، وإن الدفع جزء طبيعي من المنتج. اعتبروها نقطة بداية للنقاش، وغيّروا فيها براحتكم.</p>
+  </div>
+  <div class="tbl">
+  <table>
+    <thead><tr><th>الفكرة</th><th>فرتكال</th><th>AI</th><th>الديمو في 4 س</th><th>هيدفعوا؟</th><th>الدفع طبيعي</th><th>المجموع</th></tr></thead>
+    <tbody>
+      <tr class="pick"><td class="idea"><b>ثغرة: خريطة نقط الضعف</b><small>الطالب يصوّر ورقة امتحان سابق حلّها، والـ AI يصححها ويربط كل غلطة بدرس، ويطلع خريطة نقط ضعف وخطة أسبوعية.</small><span class="badge p">الترشيح الأول</span></td><td><span class="vpill">01</span></td><td><span class="dots" data-v="5"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="dots" data-v="4"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="dots" data-v="5"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="dots" data-v="4"><i></i><i></i><i></i><i></i><i></i></span></td><td class="total">18</td></tr>
+      <tr class="backup"><td class="idea"><b>مُحاور: تدريب إنترفيو بالإنجليزي</b><small>إنترفيو تجريبي بالـ AI على وظيفة محددة، وتقييم للمحتوى والطلاقة وطريقة STAR، وتقرير بخطة تحسين.</small><span class="badge b">البديل</span></td><td><span class="vpill">04</span></td><td><span class="dots" data-v="5"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="dots" data-v="5"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="dots" data-v="4"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="dots" data-v="4"><i></i><i></i><i></i><i></i><i></i></span></td><td class="total">18</td></tr>
+      <tr><td class="idea"><b>حصّة: نظام تشغيل للمدرس</b><small>مجموعات وغياب بـ QR وواجبات وتقرير شهري للأهل بيكتبه الـ AI. المدرس هو اللي بيدفع اشتراك.</small></td><td><span class="vpill">02</span></td><td><span class="dots" data-v="3"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="dots" data-v="4"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="dots" data-v="5"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="dots" data-v="5"><i></i><i></i><i></i><i></i><i></i></span></td><td class="total">17</td></tr>
+      <tr><td class="idea"><b>تصحيح: Feedback لـ 60 طالب</b><small>المدرس يرفع صور كراسات الفصل، والـ AI يكتب Feedback لكل طالب بالعربي وملخص يتبعت للأهل.</small></td><td><span class="vpill">03</span></td><td><span class="dots" data-v="5"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="dots" data-v="4"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="dots" data-v="3"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="dots" data-v="3"><i></i><i></i><i></i><i></i><i></i></span></td><td class="total">15</td></tr>
+      <tr><td class="idea"><b>مُتابِع: المتابعة اليومية</b><small>خطة يومية وتشيك-إن بالليل وتقرير أسبوعي لولي الأمر، بديل عن «النظام» اللي الأهل بيدفعوا فيه للدروس.</small></td><td><span class="vpill">01</span></td><td><span class="dots" data-v="3"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="dots" data-v="4"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="dots" data-v="4"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="dots" data-v="4"><i></i><i></i><i></i><i></i><i></i></span></td><td class="total">15</td></tr>
+      <tr><td class="idea"><b>Proof of Work: إثبات المهارة</b><small>الـ AI يدي الخريج مهمة واقعية في الوظيفة اللي عايزها، ويصححها، ويطلعله Badge موثّق يحطه في الـ CV.</small></td><td><span class="vpill">04</span></td><td><span class="dots" data-v="4"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="dots" data-v="3"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="dots" data-v="3"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="dots" data-v="4"><i></i><i></i><i></i><i></i><i></i></span></td><td class="total">14</td></tr>
+      <tr><td class="idea"><b>محضّر: تحضير دروس على المنهج</b><small>بيطلع أوراق عمل وكويزات جاهزة للطباعة على المنهج المصري.</small></td><td><span class="vpill">03</span></td><td><span class="dots" data-v="4"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="dots" data-v="5"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="dots" data-v="2"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="dots" data-v="3"><i></i><i></i><i></i><i></i><i></i></span></td><td class="total">14</td></tr>
+      <tr><td class="idea"><b>شفافية الدروس للأهل</b><small>تقرير تقدم شهري للأهل من ملاحظات المدرس، يوضح الفلوس اللي اتدفعت جابت إيه.</small></td><td><span class="vpill">02</span></td><td><span class="dots" data-v="3"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="dots" data-v="4"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="dots" data-v="3"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="dots" data-v="3"><i></i><i></i><i></i><i></i><i></i></span></td><td class="total">13</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="callout warn">
+    <div class="tag">تحذير في فرتكال 02</div>
+    <p>لو المنصة هتحصّل فلوس الأهل نيابة عن المدرس وتاخد نسبة، ده بيبقى <b>Marketplace / Multi-vendor</b>. ده محتاج تسجيل شركة و Split payouts، والاتنين مش موجودين في الـ Sandbox. عشان كده خلّوا المدرس هو اللي يدفع اشتراك SaaS.</p>
+  </div>
+</section>
+
+<!-- PICKS -->
+<section id="picks">
+  <div class="sec-head">
+    <h2>الترشيح: فكرة أساسية وواحدة بديلة</h2>
+    <p>اخترت الاتنين من فرتكالين مختلفين، عشان لو فرتكال اتملى (3 فرق) في Standup 1 تنقلوا على التاني على طول.</p>
+  </div>
+  <div class="picks">
+    <article class="pickcard primary">
+      <span class="badge p" style="width:fit-content">الأساسية · VERTICAL 01</span>
+      <h3>ثغرة</h3>
+      <p class="one">«صوّر امتحانك، وثغرة يقولك بالظبط بتقع فين ويذاكرلك عليه.»</p>
+      <dl>
+        <div><dt>ليه هي</dt><dd>بتحل المشكلتين 1 و 3 حرفيًا من الملف. والـ AI هو قلب المنتج (Vision بيصحح الورقة ويصنّف الأخطاء)، فبتنافس على Best Use of AI و Best Overall.</dd></div>
+        <div><dt>السوق</dt><dd>حوالي <b>826 ألف طالب</b> امتحنوا ثانوية عامة نظام جديد في 2026، وأكتر من 205 ألف منهم مانجحوش من الدور الأول.</dd></div>
+        <div><dt>مين بيدفع</dt><dd>ولي الأمر (بيدفع أصلًا في الدروس عشان المتابعة). شهري 99 ج، وسنوي (موسم الامتحانات) 699 ج.</dd></div>
+        <div><dt>لحظة الإبهار في الديمو</dt><dd>نصور ورقة حقيقية، وفي ثواني تطلع Heatmap للمواضيع، وبعدها الخطة الأسبوعية تتقفل ورا الـ Paywall فندفع وتتفتح.</dd></div>
+        <div><dt>نقلّل المخاطرة إزاي</dt><dd>نبدأ بأسئلة اختيار من متعدد في مادة واحدة (فيزيا مثلًا) عشان خط الإيد ممكن يبقى صعب على الـ OCR، ونسيب الإجابات المقالية كـ Roadmap.</dd></div>
+      </dl>
+    </article>
+    <article class="pickcard">
+      <span class="badge b" style="width:fit-content">البديلة · VERTICAL 04</span>
+      <h3>مُحاور</h3>
+      <p class="one">«اتدرّب على إنترفيو بالإنجليزي على الوظيفة اللي عايزها، وخد تقرير زي اللي الـ HR بيكتبه.»</p>
+      <dl>
+        <div><dt>ليه هي</dt><dd>أسهل حاجة نعملها ديمو. الـ AI هو المنتج كله. وجمهور ALX نفسه هو العميل المستهدف.</dd></div>
+        <div><dt>مين بيدفع</dt><dd>الخريج: شهري 99 ج أو سنوي 699 ج، والجلسة الواحدة 49 ج كخيار (دفع لكل خدمة، مش كريديت).</dd></div>
+        <div><dt>المخاطرة</dt><dd>غالبًا فرتكال زحمة، ومنافسين عالميين كتير. الاختلاف بتاعنا: أسئلة شركات مصرية، وأسعار بالجنيه، وفيدباك عن اللكنة.</dd></div>
+        <div><dt>الصوت</dt><dd>نبدأ بالكتابة، والصوت إضافة لو لحقنا (Web Speech API في المتصفح).</dd></div>
+      </dl>
+    </article>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="sec-head">
+    <h2>الرود ماب ساعة بساعة</h2>
+    <p>الوقت محسوب من أول ما نافذة البناء تبدأ (T+). المواعيد المظبوطة للـ Standups بتاعة المنظمين، فظبطوا الخطة على الأجندة اللي هيعلنوها.</p>
+  </div>
+  <div class="rail">
+    <div class="step"><div class="time">0:00</div><div class="body"><h3>التسجيل في Paymob (الكل)</h3>
+      <ul><li>Scan 1: اعملوا حساب على Paymob وخدوا الـ Sandbox keys: <span class="ltr mono">Secret key · Public key · Card Integration ID · HMAC secret</span></li>
+      <li>Scan 2: سجّلوا الحساب في فورم الإيفنت <b>بنفس البيانات بالظبط</b>، وإلا ميزة الـ 50 ألف من غير رسوم مش هتتطبق</li>
+      <li>اتعرفوا على بعض في دقيقتين: كل واحد شاطر في إيه</li></ul>
+      <p class="done">✓ خلصت لما: الـ Keys تبقى في ملف مشترك بين الفريق</p></div></div>
+
+    <div class="step"><div class="time">0:10</div><div class="body"><h3>العصف الذهني وقفل الفكرة</h3>
+      <ul><li>10 دقايق على جدول الأفكار اللي فوق، وبعدها تصويت سريع</li><li>جهّزوا جملة الـ 20 ثانية: <b>الفرتكال + لمين + بيعمل إيه</b></li><li>حددوا الأساسية والبديلة، وحددوا الـ MVP: شاشة AI واحدة + Paywall + الدفع</li></ul>
+      <p class="done">✓ خلصت لما: الجملة تبقى مكتوبة والأدوار متوزعة</p></div></div>
+
+    <div class="step event"><div class="time">~0:25</div><div class="body"><h3>Standup 1: قفل الفكرة</h3><p>20 ثانية بالظبط. لو الفرتكال اتملى نقول البديلة على طول.</p></div></div>
+
+    <div class="step"><div class="time">0:30</div><div class="body"><h3>الهيكل الأساسي (Skeleton) والنشر</h3>
+      <ul><li>نعمل Next.js + Supabase بالبرومبت الجاهز تحت</li><li>نسطّب Paymob skill الرسمي اللي فريق Paymob بيوزعه في Claude Code</li><li><b>ننشر على Vercel فورًا</b>، لأن الـ Webhook محتاج URL عام</li><li>نحط الـ Keys في Environment variables على Vercel</li></ul>
+      <p class="done">✓ خلصت لما: فيه Link شغال أونلاين</p></div></div>
+
+    <div class="step"><div class="time">0:55</div><div class="body"><h3>البناء بالتوازي (4 مسارات)</h3>
+      <ul><li><b>المسار A، الدفع:</b> Checkout → Unified Checkout → Webhook → تفعيل الاشتراك</li><li><b>المسار B، الـ AI:</b> الفيتشر الأساسي (التصحيح وتحليل نقط الضعف)، ونجرّب البرومبت على 3 أمثلة حقيقية</li><li><b>المسار C، الواجهة:</b> Landing و Paywall و Billing وصفحات السياسات المطلوبة</li><li><b>المسار D، الـ Pitch:</b> الـ Deck على الـ Template، وأرقام السوق، والمنافسين</li></ul>
+      <p class="done">✓ خلصت لما: دفعة Sandbox واحدة تنجح من الأول للآخر</p></div></div>
+
+    <div class="step event"><div class="time">~1:45</div><div class="body"><h3>Standup 2: متابعة التقدم</h3><p>إيه الشغال، وإيه الواقف، ومحتاجين إيه. أي مشكلة في الدفع نقولها هنا، لأن دعم Paymob بيحل مشاكل الدفع الأول.</p></div></div>
+
+    <div class="step"><div class="time">2:00</div><div class="body"><h3>الربط والتجربة الكاملة</h3>
+      <ul><li>نحط الـ AI ورا الـ Paywall</li><li>نجرب السيناريو كامل بكارت الاختبار 3 مرات (شهري وسنوي وتجديد)</li><li>نجهز داتا تجريبية واقعية (ورقة امتحان حقيقية)</li></ul></div></div>
+
+    <div class="step event"><div class="time">~2:20</div><div class="body"><h3>Swap-and-test</h3><p>واحد بس يروح يجرب منتج فريق تاني، والـ 3 التانيين يكملوا شغل. لما فريق تاني يجرب عندنا: <b>نتفرج ساكتين ونكتب</b> الـ Tester فهم المنتج على إنه إيه، واتزنق فين، وهيدفع ولا لأ. الإجابات دي تروح على سلايد البزنس موديل.</p></div></div>
+
+    <div class="step"><div class="time">2:40</div><div class="body"><h3>تجميد الفيتشرز والتلميع</h3>
+      <ul><li><b>ممنوع فيتشرز جديدة</b>، نصلّح الأخطاء ونحسّن الشكل بس</li><li>نكتب سكريبت الديمو (90 ثانية)</li><li><b>نسجّل فيديو احتياطي</b> لعملية دفع كاملة لو النت وقع</li></ul></div></div>
+
+    <div class="step gate"><div class="time">~3:15</div><div class="body"><h3>Payment Gate مع Paymob</h3><p>نراجع الـ Checklist اللي تحت قبلها. ده اللي بيحدد إننا مؤهلين للجوايز.</p></div></div>
+
+    <div class="step"><div class="time">3:30</div><div class="body"><h3>بروفة الـ Pitch</h3>
+      <ul><li>بروفتين بتايمر 6:30</li><li>نجهز إجابات لأسئلة متوقعة (تحت)</li><li>نتأكد إن الديمو مفتوح على الشاشة ومتسجّل دخول</li></ul></div></div>
+
+    <div class="step event"><div class="time">4:00</div><div class="body"><h3>نهاية البناء والعروض</h3><p>10 دقايق على المسرح: Pitch و Live demo و<b>دفع ناجح قدام الحكام</b>.</p></div></div>
+  </div>
+</section>
+
+<!-- ROLES -->
+<section id="roles">
+  <div class="sec-head"><h2>توزيع الأدوار المقترح</h2><p>الأدوار ممكن تتبدل، المهم كل مسار يبقى له مسؤول واحد.</p></div>
+  <div class="roles">
+    <div class="role"><span class="who">A · Builder Lead</span><h3>الدفع والباك إند</h3><ul><li>يشغّل Claude Code</li><li>Paymob و Webhook و Supabase</li><li>النشر على Vercel</li></ul></div>
+    <div class="role"><span class="who">B · AI Lead</span><h3>الفيتشر الذكي</h3><ul><li>البرومبتات والـ Vision</li><li>شكل المخرجات (JSON)</li><li>يجرب على أمثلة حقيقية</li></ul></div>
+    <div class="role"><span class="who">C · Product / UX</span><h3>الواجهة والتجربة</h3><ul><li>Landing و Paywall و Billing</li><li>صفحات السياسات</li><li>هو اللي يروح الـ Swap-and-test</li></ul></div>
+    <div class="role"><span class="who">D · Pitch Lead</span><h3>العرض والبزنس</h3><ul><li>الـ Deck على الـ Template</li><li>السوق والتسعير والمنافسين</li><li>المقدّم الأساسي</li></ul></div>
+  </div>
+</section>
+
+<!-- TECH -->
+<section id="tech">
+  <div class="sec-head"><h2>إزاي الاشتراك هيشتغل على Paymob</h2><p>6 خطوات. الـ Endpoints وترتيب حقول الـ HMAC اتأكدوا منهم من الـ Paymob skill أو <a href="https://developers.paymob.com/paymob-docs/developers/intention-apis/create-intention" target="_blank" rel="noopener">الدوكس</a> قبل ما تكتبوها.</p></div>
+  <div class="flow">
+    <div class="fstep"><span class="n">1</span><div><h3>المستخدم يختار باقة</h3><p>من الـ Paywall: شهري أو سنوي. الفرونت يبعت <span class="ltr mono">POST /api/checkout {plan}</span></p></div></div>
+    <div class="fstep"><span class="n">2</span><div><h3>السيرفر يعمل Payment Intention</h3><p>نبعت <span class="ltr mono">POST /v1/intention</span> بالـ Secret key في الـ Header، ومعاه: المبلغ بالقرش، و EGP، والـ Card Integration ID، و billing_data، و <span class="ltr mono">special_reference = userId:plan:timestamp</span>، و notification_url، و redirection_url. الرد بيرجع <span class="ltr mono">client_secret</span>.</p></div></div>
+    <div class="fstep"><span class="n">3</span><div><h3>تحويل لصفحة الدفع الموحدة</h3><p>نودّي المستخدم على Unified Checkout بالـ Public key والـ client_secret، ويدفع بكارت الاختبار.</p></div></div>
+    <div class="fstep"><span class="n">4</span><div><h3>الـ Webhook يأكد الدفع</h3><p>Paymob يبعت للـ notification_url. <b>نتحقق من الـ HMAC</b>، ولو العملية نجحت نسجّل الدفعة ونمد <span class="ltr mono">current_period_end</span>. ولازم يبقى Idempotent على رقم العملية، عشان لو نفس الإشعار اتبعت مرتين ميتحسبش مرتين.</p></div></div>
+    <div class="fstep"><span class="n">5</span><div><h3>صفحة النتيجة</h3><p>الـ redirection_url بيرجع ببيانات العملية في الـ URL، فنتحقق من الـ HMAC ونعرض «تم الاشتراك حتى تاريخ كذا».</p></div></div>
+    <div class="fstep"><span class="n">6</span><div><h3>الـ Paywall</h3><p>دالة <span class="ltr mono">hasActiveSubscription()</span> بتقفل الفيتشرز المدفوعة. لما المدة تخلص يظهر زرار «جدّد».</p></div></div>
+  </div>
+</section>
+
+<!-- PROMPT -->
+<section id="prompt">
+  <div class="sec-head"><h2>البرومبت الجاهز لـ Claude Code</h2><p>غيّروا اللي بين الأقواس المربعة بعد ما تقفلوا الفكرة، والصقوه في أول رسالة.</p></div>
+  <div class="codebox">
+    <div class="codebar"><span>Prompt 1: الهيكل الأساسي والاشتراكات</span><button class="copy" type="button" data-target="p1">نسخ</button></div>
+<pre id="p1">We are building [PRODUCT NAME] for a 4-hour hackathon (Paymob x ALX EdTech Build Night).
+Product in one sentence: [ONE-SENTENCE PITCH]. Users: [WHO]. Arabic-first RTL UI.
+
+Stack: Next.js (App Router) + TypeScript + Tailwind + Supabase (auth + Postgres). Deploy on Vercel.
+Keep it small: one core AI screen, a paywall, a billing page, a landing page.
+
+PAYMENTS (Paymob SANDBOX, one-time card payments ONLY - no recurring billing in sandbox):
+Implement subscriptions as time-based access passes.
+- Plans: monthly = 99 EGP / 30 days, yearly = 699 EGP / 365 days. Send amounts in piasters.
+- POST /api/checkout {plan}: create a Paymob payment intention server-side
+  (env: PAYMOB_SECRET_KEY, PAYMOB_PUBLIC_KEY, PAYMOB_CARD_INTEGRATION_ID, PAYMOB_HMAC_SECRET),
+  special_reference = `${userId}:${plan}:${Date.now()}`,
+  notification_url = {APP_URL}/api/paymob/webhook, redirection_url = {APP_URL}/billing/result.
+  Return the Unified Checkout URL built from the public key + client_secret.
+- POST /api/paymob/webhook: verify HMAC; on success, insert into payments and extend
+  subscriptions.current_period_end = max(now, current end) + plan days. Idempotent on transaction id.
+  Store the raw webhook JSON.
+- /billing/result: verify HMAC on query params, show success or failure in Arabic.
+- hasActiveSubscription(userId) helper; gate premium features behind a paywall showing both plans.
+- /billing: current plan, expiry date, payment history, "Renew" button.
+Tables: profiles, subscriptions(user_id, plan, status, current_period_end), payments.
+Use the Paymob skill/docs for exact endpoints and the HMAC field order. Never send the secret key to the client.
+
+Also add footer pages required by Paymob: About, Privacy, Refund, Return policies, contact phone/email,
+address "Ismailia, Egypt". Real prices only.
+
+Start by proposing the file structure, then build the payment flow first and give me a test checklist.</pre>
+  </div>
+  <div class="codebox">
+    <div class="codebar"><span>Prompt 2: الفيتشر الذكي (لفكرة ثغرة)</span><button class="copy" type="button" data-target="p2">نسخ</button></div>
+<pre id="p2">Add the core AI feature behind the paywall:
+1. Student uploads a photo of a solved past-paper page ([SUBJECT], multiple-choice first).
+2. Send the image to a vision LLM with the answer key; return strict JSON:
+   { questions:[{n, student_answer, correct_answer, is_correct, topic, lesson, why_wrong}],
+     topic_scores:[{topic, correct, total}], weekly_plan:[{day, topic, task, minutes}] }
+3. Save each attempt; show a topic heatmap across attempts (weakest first).
+4. Free tier: score only. Paid (active subscription): topic heatmap + weekly plan + history.
+Arabic UI, encouraging tone. Seed one realistic demo attempt so the demo never starts empty.</pre>
+  </div>
+</section>
+
+<!-- PITCH -->
+<section id="pitch">
+  <div class="sec-head"><h2>الـ Pitch Deck على Template بتاع ALX</h2><p>الـ Template فيه 8 سلايدات، والديمو المباشر بيتحط بعد سلايد الحل. الوقت كله 6–7 دقايق.</p></div>
+  <div class="deck">
+    <div class="slide"><span class="sn">01 · Cover</span><h3>الاسم والجملة</h3><p>اسم المنتج والجملة الواحدة.</p></div>
+    <div class="slide"><span class="sn">02 · Problem</span><h3>المشكلة</h3><p>قصة طالب حقيقي ورقم واحد صادم.</p></div>
+    <div class="slide"><span class="sn">03 · Solution</span><h3>الحل</h3><p>جملة واحدة وسكرين شوت، والفايدة للعميل، واللي بيميزنا.</p></div>
+    <div class="slide demo"><span class="sn">LIVE · Demo</span><h3>الديمو ≈ 90 ثانية</h3><p>تصوير الورقة، والتحليل، والـ Paywall، والدفع بكارت الاختبار، وبعدها الفيتشر يتفتح وصفحة Billing.</p></div>
+    <div class="slide"><span class="sn">04 · Market</span><h3>السوق</h3><p>~826 ألف طالب ثانوية عامة في السنة، وبعدها الشريحة اللي نقدر نوصلها.</p></div>
+    <div class="slide"><span class="sn">05 · Business Model</span><h3>البزنس موديل</h3><p>مين بيدفع (ولي الأمر)، والتسعير (99 / 699)، والتكاليف (AI API لكل تصحيح، ورسوم Paymob)، والمارجن. وفيه كمان إجابات الـ Tester.</p></div>
+    <div class="slide"><span class="sn">06 · Go-to-market</span><h3>الوصول للعملاء</h3><p>جروبات أولياء الأمور، والشراكة مع السناتر، وتيك توك المذاكرة.</p></div>
+    <div class="slide"><span class="sn">07 · Competition</span><h3>المنافسين</h3><p>الدروس الخصوصية والمنصات التعليمية و ChatGPT: احنا مربوطين بالمنهج، وبنتابع التقدم مع الوقت.</p></div>
+    <div class="slide"><span class="sn">08 · Team</span><h3>الفريق</h3><p>4 أفراد، وكل واحد بدوره.</p></div>
+  </div>
+  <div class="callout good">
+    <div class="tag">أسئلة متوقعة من الحكام، جهّزوا لها إجابات</div>
+    <p>• ليه ولي الأمر هيدفع لكم بدل الدرس؟ (أرخص بكتير، ومتاح بالليل، وبيوري التقدم بالأرقام)<br>
+    • تكلفة الـ AI للتصحيح الواحد كام، والمارجن كام؟ (احسبوها: سعر الـ API لكل صورة × عدد الصفحات في الشهر)<br>
+    • الاشتراك بيتجدد أوتوماتيك؟ (النهارده بندفع بالمدة، وبعد التسجيل كشركة هننقل لـ Recurring على Paymob)<br>
+    • بيانات القُصّر وخصوصيتهم؟ (ولي الأمر هو صاحب الحساب وبيوافق على استخدام البيانات)</p>
+  </div>
+</section>
+
+<!-- GATE -->
+<section id="gate">
+  <div class="sec-head"><h2>Payment Gate Checklist</h2><p>ده تجهيزنا قبل مراجعة Paymob، مش الـ Checklist الرسمية بتاعتهم. علّموا عليها وانتوا شغالين، والتعليم بيتحفظ على الجهاز ده بس.</p></div>
+  <p class="progress">خلصنا <b id="gcount">0</b> من <b id="gtotal">0</b></p>
+  <div class="check" id="gatelist">
+    <label><input type="checkbox" id="g1"><span>عملنا حساب Paymob وسجّلناه في فورم الإيفنت بنفس البيانات بالظبط</span></label>
+    <label><input type="checkbox" id="g2"><span>الـ Keys في الـ Environment variables على السيرفر بس، ومفيش Secret key في الفرونت</span></label>
+    <label><input type="checkbox" id="g3"><span>الـ Intention بيتعمل بالمبلغ الصح بالقرش و EGP</span></label>
+    <label><input type="checkbox" id="g4"><span>التحويل لصفحة Unified Checkout شغال</span></label>
+    <label><input type="checkbox" id="g5"><span>دفعة بكارت الاختبار بتنجح من الأول للآخر</span></label>
+    <label><input type="checkbox" id="g6"><span>الـ Webhook بيوصل للـ URL العام، والـ HMAC بيتحقق منه</span></label>
+    <label><input type="checkbox" id="g7"><span>الاشتراك بيتفعّل في الداتابيز وتاريخ الانتهاء صح (30 و 365 يوم)</span></label>
+    <label><input type="checkbox" id="g8"><span>عملية الدفع الفاشلة بتظهر رسالة واضحة ومش بتفعّل حاجة</span></label>
+    <label><input type="checkbox" id="g9"><span>الـ Paywall بيقفل الفيتشر قبل الدفع ويفتحه بعده</span></label>
+    <label><input type="checkbox" id="g10"><span>صفحات About و Privacy و Refund و Return، ورقم تليفون وإيميل وعنوان، وأسعار حقيقية</span></label>
+    <label><input type="checkbox" id="g11"><span>فيه فيديو احتياطي لعملية دفع كاملة</span></label>
+  </div>
+</section>
+
+<!-- RISKS -->
+<section id="risks">
+  <div class="sec-head"><h2>المخاطر وإزاي نتعامل معاها</h2></div>
+  <div class="risks">
+    <div class="risk"><b>الفرتكال يتملى في Standup 1</b><span class="fix">الفكرة البديلة جاهزة في فرتكال تاني، وجملتها مكتوبة.</span></div>
+    <div class="risk"><b>الـ Webhook مش واصل وانتوا شغالين Localhost</b><span class="fix">ننشر على Vercel من الأول. ولو حصلت مشكلة، صفحة النتيجة تتحقق من الـ HMAC في الـ redirection وتفعّل الاشتراك كخطة احتياطية.</span></div>
+    <div class="risk"><b>الـ AI مش بيقرا خط الإيد كويس</b><span class="fix">نبدأ بأسئلة اختيار من متعدد، ونجهز صورة ديمو متجربة قبل كده.</span></div>
+    <div class="risk"><b>النت يقع وقت العرض</b><span class="fix">فيديو احتياطي متسجل، وهوتسبوت من موبايل.</span></div>
+    <div class="risk"><b>الفيتشرز تكتر والوقت يخلص</b><span class="fix">تجميد الفيتشرز عند 2:40 إجباري. الدفع الشغال أهم من أي فيتشر.</span></div>
+    <div class="risk"><b>موديل Credits أو Tokens</b><span class="fix">ممنوع عند Paymob. نشتغل بباقة بمدة أو دفع لكل خدمة بس.</span></div>
+    <div class="risk"><b>الخلط بين المبلغ بالجنيه والقرش</b><span class="fix">ثابت واحد في الكود فيه المبالغ بالقرش، ونختبر الباقتين.</span></div>
+  </div>
+</section>
+
+<footer>
+  <p>المصدر: عرض «Paymob x ALX Build Night» (قواعد الإيفنت وشرايح Paymob وقالب الـ Pitch بتاع ALX Ventures).</p>
+  <p>رقم السوق: نتيجة الثانوية العامة 2026، جريدة الخليج (825,867 طالب نظام جديد).</p>
+</footer>
+</div>
+
+<script>
+(function(){
+  var KEY='buildnight-gate-v1';
+  var boxes=[].slice.call(document.querySelectorAll('#gatelist input'));
+  var saved={};
+  try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){saved={};}
+  function update(){
+    var n=boxes.filter(function(b){return b.checked}).length;
+    document.getElementById('gcount').textContent=n;
+    document.getElementById('gtotal').textContent=boxes.length;
+  }
+  boxes.forEach(function(b){
+    if(saved[b.id])b.checked=true;
+    b.addEventListener('change',function(){
+      saved[b.id]=b.checked;
+      try{localStorage.setItem(KEY,JSON.stringify(saved));}catch(e){}
+      update();
+    });
+  });
+  update();
+  document.querySelectorAll('button.copy').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var el=document.getElementById(btn.dataset.target);
+      var txt=el.textContent;
+      function done(){btn.textContent='اتنسخ ✓';setTimeout(function(){btn.textContent='نسخ'},1800)}
+      function fallback(){var r=document.createRange();r.selectNodeContents(el);var s=getSelection();s.removeAllRanges();s.addRange(r);btn.textContent='متحدد — انسخ يدوي'}
+      try{navigator.clipboard.writeText(txt).then(done,fallback)}catch(e){fallback()}
+    });
+  });
+})();
+</script>
