@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>المواد</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2F5BEA}a:hover{color:#1D3FB8}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 52px 24px 28px; display: flex; flex-direction: column; gap: 18px; background: #FFFFFF; color: #1F2328; font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif; direction: rtl">
+  <div style="display: flex; align-items: center; gap: 12px">
+    <a href="Grade.dc.html" aria-label="رجوع" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #1F2328">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+    </a>
+    <div style="flex-grow: 1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px">
+      <div style="height: 6px; border-radius: 999px; background: {{accent}}"></div>
+      <div style="height: 6px; border-radius: 999px; background: {{accent}}"></div>
+      <div style="height: 6px; border-radius: 999px; background: {{accent}}"></div>
+      <div style="height: 6px; border-radius: 999px; background: #E3E5E9"></div>
+    </div>
+    <div style="font-size: 12px; color: #5B616B">3 / 4</div>
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 6px">
+    <h1 style="margin: 0; font-size: 24px; font-weight: 700">إيه المواد اللي محتاج تفهمها أكتر؟</h1>
+    <p style="margin: 0; font-size: 14px; color: #5B616B">اختار أكتر من مادة. المواد اللي لسه جاية هنبلغك أول ما تنزل.</p>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+    <button type="button" style="height: 84px; border-radius: 14px; border: 2px solid {{accent}}; background: #EEF2FD; font: inherit; color: #1F2328; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 4px; padding: 0 14px">
+      <span style="font-size: 16px; font-weight: 700">فيزيا</span>
+      <span style="font-size: 12px; font-weight: 700; color: #0F7B6C">متاح دلوقتي</span>
+    </button>
+    <button type="button" style="height: 84px; border-radius: 14px; border: 2px solid {{accent}}; background: #EEF2FD; font: inherit; color: #1F2328; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 4px; padding: 0 14px">
+      <span style="font-size: 16px; font-weight: 700">كيميا</span>
+      <span style="font-size: 12px; color: #5B616B">قريبًا · هنبلغك</span>
+    </button>
+    <button type="button" style="height: 84px; border-radius: 14px; border: 1.5px solid #C9CDD3; background: #FFFFFF; font: inherit; color: #1F2328; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 4px; padding: 0 14px">
+      <span style="font-size: 16px; font-weight: 600">أحياء</span>
+      <span style="font-size: 12px; color: #5B616B">قريبًا</span>
+    </button>
+    <button type="button" style="height: 84px; border-radius: 14px; border: 1.5px solid #C9CDD3; background: #FFFFFF; font: inherit; color: #1F2328; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 4px; padding: 0 14px">
+      <span style="font-size: 16px; font-weight: 600">رياضة</span>
+      <span style="font-size: 12px; color: #5B616B">قريبًا</span>
+    </button>
+  </div>
+  <section style="display: flex; flex-direction: column; gap: 10px">
+    <h2 style="margin: 0; font-size: 16px; font-weight: 700">مهارة إضافية</h2>
+    <button type="button" style="border-radius: 14px; border: 1.5px dashed #9AA0A8; background: #FFFFFF; font: inherit; color: #1F2328; display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 14px">
+      <span style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px">
+        <span style="font-size: 16px; font-weight: 600">البرمجة</span>
+        <span style="font-size: 12px; color: #5B616B; direction: ltr">Scratch · Python</span>
+      </span>
+      <span style="font-size: 12px; color: #5B616B; border: 1.5px solid #C9CDD3; border-radius: 999px; padding: 2px 10px">قريبًا</span>
+    </button>
+  </section>
+  <a href="Parent.dc.html" style="margin-top: auto; height: 52px; border-radius: 12px; background: {{accent}}; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700">التالي</a>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#2F5BEA","options":["#2F5BEA","#0F7B6C","#B45309"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#2F5BEA' };
+  }
+}
+</script>
+</body>
+</html>

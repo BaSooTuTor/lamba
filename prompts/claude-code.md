@@ -10,8 +10,21 @@ Interactive Arabic-first (RTL, mobile-first) learning platform for Egyptian Than
 interactive simulations + an AI tutor that explains each student's own mistake.
 Scope: Physics, chapter "Electric current & Ohm's law", 3 lessons (lesson 1 free, 2-3 paid).
 
-Stack: Next.js (App Router) + TypeScript + Tailwind + Supabase (auth + Postgres). Deploy on Cloudflare Workers via @opennextjs/cloudflare (wrangler).
+Stack: Next.js (App Router) + TypeScript + Tailwind + Supabase (auth + Postgres).
+Deploy on Cloudflare Workers via OpenNext (@opennextjs/cloudflare) with wrangler.
+Secrets via `wrangler secret put` (local: .dev.vars). Verify Paymob HMAC with Web Crypto (crypto.subtle).
 Use Supabase Edge Functions for the Paymob webhook and Postgres functions for idempotent writes.
+
+ONBOARDING (before sign-up, 4 questions):
+- Welcome screen.
+- Education system: Thanaweya Amma (available); Egyptian Baccalaureate, Azhar, IGCSE,
+  American Diploma, Other = "coming soon" -> waitlist screen (save contact + system to `waitlist`).
+- Grade (1/2/3 secondary) + track (science / math / literary; none for grade 1).
+  Exam cohort computed: grade 3 -> 2027, grade 2 -> 2028, grade 1 -> 2029.
+- Subjects of interest: physics live; chemistry, biology, math, programming (Scratch/Python) = coming soon
+  (save to `interests`).
+- Who pays (me / my parent) + optional parent name and phone for a weekly report.
+- Then sign-up screen showing a summary of the answers.
 
 PAYMENTS (Paymob SANDBOX, one-time card payments ONLY, no recurring):
 Sell an exam-cohort pass, not a monthly subscription.
@@ -27,7 +40,8 @@ Sell an exam-cohort pass, not a monthly subscription.
   and set subscriptions.current_period_end = cohort accessEnd. Idempotent.
 - /billing/result: verify HMAC, show result in Arabic (fallback activation if webhook missed).
 - Paywall on locked lessons; /billing page with plan, end date, payment history.
-Tables: profiles, lessons, attempts, subscriptions, payments.
+Tables: profiles (education_system, grade, track, exam_cohort, payer, parent_phone, xp, streak),
+lessons, attempts, subscriptions, payments, waitlist, interests.
 Use the Paymob skill/docs for exact endpoints and HMAC field order. Never expose secret keys.
 
 Also: footer pages About, Privacy, Refund, Return; contact phone/email; real prices.
