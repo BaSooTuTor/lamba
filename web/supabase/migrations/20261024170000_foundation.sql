@@ -120,6 +120,10 @@ create policy "profiles: update own" on public.profiles
 
 create policy "lessons: readable by everyone" on public.lessons
   for select to anon, authenticated using (true);
+-- Everyone sees the lesson list, but not the paid content: the server reads `content`
+-- with the service role after checking access.
+revoke select on public.lessons from anon, authenticated;
+grant select (id, subject, chapter, "order", title, is_free) on public.lessons to anon, authenticated;
 
 create policy "attempts: read own" on public.attempts
   for select to authenticated using ((select auth.uid()) = user_id);

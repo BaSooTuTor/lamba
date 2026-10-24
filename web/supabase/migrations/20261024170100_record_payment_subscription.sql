@@ -45,6 +45,16 @@ begin
       raise exception 'Unknown cohort %', p_cohort;
     end if;
 
+    -- Only a known plan at its exact price activates the pass (keep in sync with src/lib/cohorts.ts).
+    -- A mismatch stays recorded for follow-up but grants nothing.
+    if (p_cohort, result.plan, result.amount_cents) not in (
+      ('2027', 'early_bird', 69900),
+      ('2027', 'full_year', 79900),
+      ('2027', 'final_revision', 39900)
+    ) then
+      return result;
+    end if;
+
     insert into public.subscriptions (user_id, cohort, plan, status, current_period_end, payment_id)
     values (result.user_id, p_cohort, result.plan, 'active', period_end, result.id)
     on conflict (user_id, cohort) do update
