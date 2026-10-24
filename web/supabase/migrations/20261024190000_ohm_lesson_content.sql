@@ -1,0 +1,137 @@
+-- The Ohm's law showcase lesson: 6-card content (wireframes Predict → Recap), plus
+-- award_xp so the server can add XP atomically. Correct answers, tutor fallbacks and the
+-- worked solution live here and are only read by the server (content is not client-readable).
+
+update public.lessons
+set content = $json$
+{
+  "version": 1,
+  "concept": "ohm_law",
+  "next_lesson_id": "phy_s3_series_parallel",
+  "predict": {
+    "kicker": "قبل ما نبدأ",
+    "intro": "التيار الكهربي هو الشحنات اللي بتعدي في السلك كل ثانية. والجهد هو اللي بيزق الشحنات دي.",
+    "question": "توقّع: لو زوّدنا جهد البطارية للضعف، اللمبة هتعمل إيه؟",
+    "note": "مفيش درجات هنا. عايزين نعرف إنت بتفكر إزاي.",
+    "options": [
+      { "id": "more", "label": "هتنوّر أكتر" },
+      { "id": "less", "label": "هتنوّر أقل" },
+      { "id": "same", "label": "هتفضل زي ما هي" }
+    ],
+    "expected": "more",
+    "cta": "يلا نجرّب"
+  },
+  "mission": {
+    "kicker": "مهمتك",
+    "title": "خلّي التيار 2 أمبير بالظبط",
+    "body": "حرّك الجهد والمقاومة لحد ما الأميتر يقرا 2.0 A.",
+    "target": 2,
+    "tolerance": 0.05,
+    "start": { "voltage": 6, "resistance": 6 },
+    "done": "المهمة تمّت: التيار 2.0 أمبير",
+    "pending": "لسه، التيار دلوقتي",
+    "prediction_hint": "زوّد الجهد وشوف بنفسك.",
+    "cta": "كمّل للشرح"
+  },
+  "explain": {
+    "right_title": "توقّعك كان صح",
+    "right_body": "قلت إن اللمبة هتنوّر أكتر، وده اللي حصل في المحاكاة.",
+    "wrong_title": "توقّعك كان مختلف",
+    "wrong_body": "قلت «{prediction}»، بس في المحاكاة لما الجهد زاد، التيار زاد واللمبة نوّرت أكتر.",
+    "law_kicker": "ليه؟ قانون أوم",
+    "law_words": "التيار (أمبير) = الجهد (فولت) ÷ المقاومة (أوم)",
+    "relations": [
+      { "title": "الجهد يزيد، التيار يزيد", "body": "علاقة طردية: ضاعفت الجهد، فالتيار اتضاعف" },
+      { "title": "المقاومة تزيد، التيار يقل", "body": "علاقة عكسية: المقاومة بتعطّل حركة الشحنات" }
+    ],
+    "cta": "اختبر فهمك"
+  },
+  "check": {
+    "kicker": "اختبر فهمك · سؤال فكرة",
+    "question": "لو زوّدنا المقاومة والجهد ثابت، التيار هيعمل إيه؟",
+    "options": [
+      { "id": "up", "label": "يزيد" },
+      { "id": "down", "label": "يقل" },
+      { "id": "same", "label": "يفضل زي ما هو" }
+    ],
+    "correct": "down",
+    "xp": 10,
+    "right_title": "صح! علاقتهم عكسية",
+    "right_body": "المقاومة لما تزيد بتعطّل الشحنات أكتر، فالتيار يقل. ده نفس اللي شفته لما حرّكت المقاومة في المحاكاة.",
+    "wrong_title": "قرّب، بس لأ",
+    "wrong_body": "افتكر المحاكاة: لما زوّدت R والجهد ثابت، رقم الأميتر عمل إيه؟ جرّب تاني.",
+    "cta": "سؤال بنظام الامتحان"
+  },
+  "exam": {
+    "kicker": "سؤال بنظام الامتحان",
+    "question": "دايرة فيها بطارية جهدها 12 فولت ومقاومة 6 أوم. التيار المار فيها يساوي؟",
+    "options": [
+      { "id": "72", "label": "72 A" },
+      { "id": "2", "label": "2 A" },
+      { "id": "0.5", "label": "0.5 A" },
+      { "id": "18", "label": "18 A" }
+    ],
+    "correct": "2",
+    "max_attempts": 2,
+    "xp_first_try": 30,
+    "xp_second_try": 15,
+    "preset": { "voltage": 12, "resistance": 6 },
+    "wrong_note": "إجابتك مش صح، بس فيه سبب واضح.",
+    "retry_note": "لو غلطت تاني، هنوريك الحل خطوة بخطوة.",
+    "right_title": "صح! I = V / R",
+    "right_body": "قسمت الجهد على المقاومة، وده بالظبط اللي الأميتر قراه في المحاكاة.",
+    "fallbacks": {
+      "72": {
+        "diagnosis": "إنت ضربت الجهد في المقاومة، لكن في قانون أوم العلاقة بينهم مش ضرب.",
+        "hint": "افتكر: لما المقاومة تزيد التيار بيقل، يعني المقاومة لازم تكون في المقام.",
+        "try_in_sim": "افتح المحاكاة بأرقام السؤال (12 فولت و 6 أوم) وشوف الأميتر بيقرا كام."
+      },
+      "0.5": {
+        "diagnosis": "إنت قسمت المقاومة على الجهد، يعني القسمة اتعملت بالمقلوب.",
+        "hint": "الجهد هو اللي بيزق الشحنات، فهو اللي فوق في القسمة، والمقاومة تحت.",
+        "try_in_sim": "افتح المحاكاة بأرقام السؤال وزوّد الجهد شوية: لو التيار زاد، يبقى الجهد فوق."
+      },
+      "18": {
+        "diagnosis": "إنت جمعت الجهد والمقاومة، بس دول كميتين مختلفين ومينفعش يتجمعوا.",
+        "hint": "قانون أوم بيربط التيار بالجهد والمقاومة بعملية واحدة بس، وهي مش جمع.",
+        "try_in_sim": "افتح المحاكاة بأرقام السؤال (12 فولت و 6 أوم) وقارن رقم الأميتر بإجابتك."
+      }
+    },
+    "solution": [
+      { "label": "المعطيات", "math": "V = 12 V ,  R = 6 Ω" },
+      { "label": "القانون", "math": "I = V / R" },
+      { "label": "التعويض", "math": "I = 12 / 6" },
+      { "label": "النتيجة", "math": "I = 2 A" }
+    ]
+  },
+  "recap": {
+    "title": "اللمبة نوّرت: خلصت الدرس الأول",
+    "check_concept": "علاقة الجهد والتيار",
+    "exam_concept": "حساب التيار",
+    "summary_kicker": "الخلاصة في 3 سطور",
+    "lines": [
+      "الجهد يزيد، التيار يزيد (طردية)",
+      "المقاومة تزيد، التيار يقل (عكسية)",
+      "متضربش الجهد في المقاومة: اقسم"
+    ],
+    "review_note": "هنفكّرك بسؤالين بكرة عشان الفكرة تثبت.",
+    "back": "ارجع للدروس"
+  }
+}
+$json$::jsonb
+where id = 'phy_s3_electric_current_ohm';
+
+-- Adds XP to a profile and returns the new total. Only the server (service role) may call it.
+create function public.award_xp(p_user_id uuid, p_amount integer)
+returns integer
+language sql
+set search_path = ''
+as $$
+  update public.profiles
+  set xp = xp + greatest(p_amount, 0)
+  where id = p_user_id
+  returning xp;
+$$;
+
+revoke execute on function public.award_xp from public, anon, authenticated;
+grant execute on function public.award_xp to service_role;
