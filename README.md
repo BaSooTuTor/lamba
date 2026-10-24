@@ -18,4 +18,4 @@
 - **المشكلة:** الطالب بيحفظ من غير ما يفهم، وبيذاكر لوحده من غير ما حد يصحح له. فالأهل بيدفعوا دروس خصوصي.
 - **الحل:** محاكاة تفاعلية على المنهج المصري، ومدرس AI بيشرح الغلطة بناءً على اللي الطالب عمله في المحاكاة.
 - **الدفع:** دفعة واحدة على Paymob Sandbox. الـ Sandbox مفيهوش Subscriptions، فالباقة بتفضل سارية لحد 31 أغسطس 2027، والدور التاني داخل فيها.
-- **التقنية:** Next.js و TypeScript و Tailwind و Supabase، والنشر على Vercel.
+- **التقنية:** Next.js و TypeScript و Tailwind و Supabase (Postgres و Auth و Edge Functions)، والنشر على Cloudflare Workers بـ OpenNext.

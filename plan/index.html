@@ -323,7 +323,7 @@ html{scroll-behavior:smooth}
     <div class="step event"><div class="time">~0:25</div><div class="body"><h3>Standup 1: قفل الفكرة</h3><p>20 ثانية بالظبط. لو الفرتكال اتملى نقول البديلة على طول.</p></div></div>
 
     <div class="step"><div class="time">0:30</div><div class="body"><h3>الهيكل الأساسي (Skeleton) والنشر</h3>
-      <ul><li>نعمل Next.js + Supabase بالبرومبت الجاهز تحت</li><li>نسطّب Paymob skill الرسمي اللي فريق Paymob بيوزعه في Claude Code</li><li><b>ننشر على Vercel فورًا</b>، لأن الـ Webhook محتاج URL عام</li><li>نحط الـ Keys في Environment variables على Vercel</li></ul>
+      <ul><li>نعمل Next.js + Supabase بالبرومبت الجاهز تحت</li><li>نسطّب Paymob skill الرسمي اللي فريق Paymob بيوزعه في Claude Code</li><li><b>ننشر على Cloudflare Workers فورًا</b> (OpenNext)، والـ Webhook يبقى Supabase Edge Function بـ URL عام</li><li>نحط الـ Keys كـ Secrets على Cloudflare (<span class="ltr mono">wrangler secret put</span>) وعلى Supabase (<span class="ltr mono">supabase secrets set</span>)</li></ul>
       <p class="done">✓ خلصت لما: فيه Link شغال أونلاين</p></div></div>
 
     <div class="step"><div class="time">0:55</div><div class="body"><h3>البناء بالتوازي (4 مسارات)</h3>
@@ -353,7 +353,7 @@ html{scroll-behavior:smooth}
 <section id="roles">
   <div class="sec-head"><h2>توزيع الأدوار المقترح</h2><p>الأدوار ممكن تتبدل، المهم كل مسار يبقى له مسؤول واحد.</p></div>
   <div class="roles">
-    <div class="role"><span class="who">A · Builder Lead</span><h3>الدفع والباك إند</h3><ul><li>يشغّل Claude Code</li><li>Paymob و Webhook و Supabase</li><li>النشر على Vercel</li></ul></div>
+    <div class="role"><span class="who">A · Builder Lead</span><h3>الدفع والباك إند</h3><ul><li>يشغّل Claude Code</li><li>Paymob و Webhook و Supabase</li><li>النشر على Cloudflare Workers</li></ul></div>
     <div class="role"><span class="who">B · AI Lead</span><h3>الفيتشر الذكي</h3><ul><li>البرومبتات والـ Vision</li><li>شكل المخرجات (JSON)</li><li>يجرب على أمثلة حقيقية</li></ul></div>
     <div class="role"><span class="who">C · Product / UX</span><h3>الواجهة والتجربة</h3><ul><li>Landing و Paywall و Billing</li><li>صفحات السياسات</li><li>هو اللي يروح الـ Swap-and-test</li></ul></div>
     <div class="role"><span class="who">D · Pitch Lead</span><h3>العرض والبزنس</h3><ul><li>الـ Deck على الـ Template</li><li>السوق والتسعير والمنافسين</li><li>المقدّم الأساسي</li></ul></div>
@@ -381,7 +381,8 @@ html{scroll-behavior:smooth}
 <pre id="p1">We are building [PRODUCT NAME] for a 4-hour hackathon (Paymob x ALX EdTech Build Night).
 Product in one sentence: [ONE-SENTENCE PITCH]. Users: [WHO]. Arabic-first RTL UI.
 
-Stack: Next.js (App Router) + TypeScript + Tailwind + Supabase (auth + Postgres). Deploy on Vercel.
+Stack: Next.js (App Router) + TypeScript + Tailwind + Supabase (auth + Postgres). Deploy on Cloudflare Workers via @opennextjs/cloudflare (wrangler).
+Use Supabase Edge Functions for the Paymob webhook and Postgres functions for idempotent writes.
 Keep it small: one core AI screen, a paywall, a billing page, a landing page.
 
 PAYMENTS (Paymob SANDBOX, one-time card payments ONLY - no recurring billing in sandbox):
@@ -390,9 +391,9 @@ Implement subscriptions as time-based access passes.
 - POST /api/checkout {plan}: create a Paymob payment intention server-side
   (env: PAYMOB_SECRET_KEY, PAYMOB_PUBLIC_KEY, PAYMOB_CARD_INTEGRATION_ID, PAYMOB_HMAC_SECRET),
   special_reference = `${userId}:${plan}:${Date.now()}`,
-  notification_url = {APP_URL}/api/paymob/webhook, redirection_url = {APP_URL}/billing/result.
+  notification_url = {SUPABASE_URL}/functions/v1/paymob-webhook, redirection_url = {APP_URL}/billing/result.
   Return the Unified Checkout URL built from the public key + client_secret.
-- POST /api/paymob/webhook: verify HMAC; on success, insert into payments and extend
+- Supabase Edge Function paymob-webhook: verify HMAC; on success, insert into payments and extend
   subscriptions.current_period_end = max(now, current end) + plan days. Idempotent on transaction id.
   Store the raw webhook JSON.
 - /billing/result: verify HMAC on query params, show success or failure in Arabic.
@@ -466,7 +467,7 @@ Arabic UI, encouraging tone. Seed one realistic demo attempt so the demo never s
   <div class="sec-head"><h2>المخاطر وإزاي نتعامل معاها</h2></div>
   <div class="risks">
     <div class="risk"><b>الفرتكال يتملى في Standup 1</b><span class="fix">الفكرة البديلة جاهزة في فرتكال تاني، وجملتها مكتوبة.</span></div>
-    <div class="risk"><b>الـ Webhook مش واصل وانتوا شغالين Localhost</b><span class="fix">ننشر على Vercel من الأول. ولو حصلت مشكلة، صفحة النتيجة تتحقق من الـ HMAC في الـ redirection وتفعّل الاشتراك كخطة احتياطية.</span></div>
+    <div class="risk"><b>الـ Webhook مش واصل وانتوا شغالين Localhost</b><span class="fix">ننشر على Cloudflare Workers من الأول، والـ Webhook Edge Function على Supabase ليها URL عام. ولو حصلت مشكلة، صفحة النتيجة تتحقق من الـ HMAC في الـ redirection وتفعّل الاشتراك كخطة احتياطية.</span></div>
     <div class="risk"><b>الـ AI مش بيقرا خط الإيد كويس</b><span class="fix">نبدأ بأسئلة اختيار من متعدد، ونجهز صورة ديمو متجربة قبل كده.</span></div>
     <div class="risk"><b>النت يقع وقت العرض</b><span class="fix">فيديو احتياطي متسجل، وهوتسبوت من موبايل.</span></div>
     <div class="risk"><b>الفيتشرز تكتر والوقت يخلص</b><span class="fix">تجميد الفيتشرز عند 2:40 إجباري. الدفع الشغال أهم من أي فيتشر.</span></div>

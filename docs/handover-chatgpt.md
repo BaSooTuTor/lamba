@@ -59,7 +59,7 @@ Oct 24, 2026 · @Abdulbasit
 | الباقة سارية لحد آخر أغسطس مش يوليو | عشان طلاب الدور التاني ميتقفلش عليهم الاشتراك |
 | ضمان استرجاع 14 يوم ودرس مجاني أول | عشان يطمّن الأهل قدام المبلغ الكبير |
 | Supabase مش Convex | التسجيل جاهز، و Claude Code عارفه كويس، و Postgres مش بيربطنا بمزوّد |
-| البناء بـ Claude Code، والنشر على Vercel من أول نص ساعة | الـ Webhook محتاج URL عام |
+| البناء بـ Claude Code، والنشر على Cloudflare Workers من أول نص ساعة | الـ Webhook محتاج URL عام |
 
 **اسم المنتج: لمبة (Lamba).** استبعدنا «Eduactive» لأنه قريب جدًا من Eduact، ودي شركة EdTech مصرية أبواب اشترتها في سبتمبر 2026. واخترنا «لمبة» لأن «اللمبة نوّرت» تعبير مصري معناه «فهمت»، والديمو نفسه فيه لمبة بتنوّر. واستبعدنا «فهّمني» كمان، لأنه قريب من منصة «فهيم» الموجودة.
 
@@ -120,7 +120,7 @@ export const COHORTS = {
 | F11 | زرار مخفي بيغيّر «النهارده» عشان الحكام يشوفوا السعر بيتغير | P1 |
 | F12 | صفحات السياسات وبيانات التواصل | P1 |
 
-**التقنية:** Next.js (App Router) و TypeScript و Tailwind، والواجهة عربي RTL ومتظبطة على الموبايل الأول. الداتا والتسجيل على Supabase (Postgres + Auth)، والنشر على Vercel.
+**التقنية:** Next.js (App Router) و TypeScript و Tailwind، والواجهة عربي RTL ومتظبطة على الموبايل الأول. الداتا والتسجيل على Supabase (Postgres + Auth + Edge Functions)، والنشر على Cloudflare Workers بـ OpenNext.
 
 | الجدول | الأعمدة |
 | --- | --- |
@@ -130,7 +130,7 @@ export const COHORTS = {
 | subscriptions | user\_id, cohort, plan, status, current\_period\_end |
 | payments | id, user\_id, paymob\_transaction\_id (unique), amount\_cents, plan, success, raw (JSON) |
 
-**الـ APIs:** `GET /api/offer` · `POST /api/checkout` · `POST /api/paymob/webhook` · `GET /billing/result` · `POST /api/tutor/explain` · `POST /api/practice/generate`
+**الـ APIs:** `GET /api/offer` · `POST /api/checkout` · Supabase Edge Function `paymob-webhook` · `GET /billing/result` · `POST /api/tutor/explain` · `POST /api/practice/generate`
 
 **متغيرات البيئة:** `PAYMOB_SECRET_KEY` · `PAYMOB_PUBLIC_KEY` · `PAYMOB_CARD_INTEGRATION_ID` · `PAYMOB_HMAC_SECRET` · `AI_API_KEY` · `APP_URL` · مفاتيح Supabase
 
@@ -167,7 +167,8 @@ Interactive Arabic-first (RTL, mobile-first) learning platform for Egyptian Than
 interactive simulations + an AI tutor that explains each student's own mistake.
 Scope: Physics, chapter "Electric current & Ohm's law", 3 lessons (lesson 1 free, 2-3 paid).
 
-Stack: Next.js (App Router) + TypeScript + Tailwind + Supabase (auth + Postgres). Deploy on Vercel.
+Stack: Next.js (App Router) + TypeScript + Tailwind + Supabase (auth + Postgres). Deploy on Cloudflare Workers via @opennextjs/cloudflare (wrangler).
+Use Supabase Edge Functions for the Paymob webhook and Postgres functions for idempotent writes.
 
 PAYMENTS (Paymob SANDBOX, one-time card payments ONLY, no recurring):
 Sell an exam-cohort pass, not a monthly subscription.
@@ -177,9 +178,9 @@ Sell an exam-cohort pass, not a monthly subscription.
 - GET /api/offer: active plan/price/end date/months left for the user's cohort.
 - POST /api/checkout {cohort}: server picks plan+price, creates Paymob payment intention
   (env: PAYMOB_SECRET_KEY, PAYMOB_PUBLIC_KEY, PAYMOB_CARD_INTEGRATION_ID, PAYMOB_HMAC_SECRET),
-  special_reference = userId:cohort:plan:timestamp, notification_url /api/paymob/webhook,
+  special_reference = userId:cohort:plan:timestamp, notification_url {SUPABASE_URL}/functions/v1/paymob-webhook,
   redirection_url /billing/result. Return the Unified Checkout URL (public key + client_secret).
-- POST /api/paymob/webhook: verify HMAC; on success insert payment (unique transaction id)
+- Supabase Edge Function paymob-webhook: verify HMAC; on success insert payment (unique transaction id)
   and set subscriptions.current_period_end = cohort accessEnd. Idempotent.
 - /billing/result: verify HMAC, show result in Arabic (fallback activation if webhook missed).
 - Paywall on locked lessons; /billing page with plan, end date, payment history.
@@ -206,7 +207,7 @@ Build the payment flow FIRST, then give me a test checklist.
 
 1. التسجيل في Paymob وناخد الـ Sandbox keys، ونسجل الحساب في فورم الإيفنت بنفس البيانات بالظبط.
 2. نعمل مشروع Supabase والجداول، ونقفل Confirm email.
-3. Claude Code يعمل الهيكل الأساسي بالبرومبت اللي في قسم 6، وننشر على Vercel على طول.
+3. Claude Code يعمل الهيكل الأساسي بالبرومبت اللي في قسم 6، وننشر على Cloudflare Workers على طول.
 4. نشغّل الدفع من الأول للآخر بكارت الاختبار.
 5. نبني الدروس والمحاكاة والمدرس الذكي ورا الـ Paywall.
 6. تجميد الفيتشرز، وبعده Payment Gate، وبروفة الـ Pitch.
