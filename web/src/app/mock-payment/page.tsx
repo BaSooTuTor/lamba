@@ -34,6 +34,16 @@ export default function MockPaymentPage() {
     setPaying(false);
   }
 
+  async function payWithPaymob() {
+    setPaying(true);
+    setError(null);
+    const res = await fetch("/api/checkout", { method: "POST" });
+    const body = (await res.json()) as { url?: string; error?: string };
+    if (body.url) return window.location.assign(body.url);
+    setError(body.error ?? "حصل خطأ");
+    setPaying(false);
+  }
+
   useEffect(() => {
     load();
   }, []);
@@ -49,6 +59,14 @@ export default function MockPaymentPage() {
         className="mt-6 w-full rounded-lg bg-black px-4 py-3 text-white disabled:opacity-50"
       >
         {paying ? "جاري الدفع…" : "ادفع 799 ج"}
+      </button>
+
+      <button
+        onClick={payWithPaymob}
+        disabled={paying}
+        className="mt-3 w-full rounded-lg border border-current px-4 py-3 disabled:opacity-50"
+      >
+        ادفع بـ Paymob (Sandbox)
       </button>
 
       {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
