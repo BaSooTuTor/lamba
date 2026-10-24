@@ -3,6 +3,7 @@
 import "@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "@supabase/supabase-js";
 import { hmacStringFromTransaction, verifyHmac } from "../_shared/paymob-hmac.ts";
+import { MISSING_HMAC_SECRET, parseReference } from "../_shared/paymob-reference.ts";
 
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL")!,
@@ -22,12 +23,13 @@ Deno.serve(async (req) => {
     return Response.json({ ignored: true });
   }
 
-  const ok = await verifyHmac(hmacStringFromTransaction(tx), hmac, Deno.env.get("PAYMOB_HMAC_SECRET")!);
+  const secret = Deno.env.get("PAYMOB_HMAC_SECRET");
+  if (!secret) return Response.json({ error: MISSING_HMAC_SECRET }, { status: 500 });
+
+  const ok = await verifyHmac(hmacStringFromTransaction(tx), hmac, secret);
   if (!ok) return Response.json({ error: "Invalid HMAC" }, { status: 401 });
 
-  // special_reference = userId:cohort:plan:timestamp (set in /api/checkout).
-  const reference: string = tx.order?.merchant_order_id ?? "";
-  const plan = reference.split(":")[2] ?? "unknown";
+  const { userId, cohort, plan } = parseReference(tx.order?.merchant_order_id);
 
   const { error } = await supabase.rpc("record_payment", {
     p_transaction_id: String(tx.id),
@@ -35,6 +37,8 @@ Deno.serve(async (req) => {
     p_plan: plan,
     p_success: tx.success === true,
     p_raw: body,
+    p_user_id: userId,
+    p_cohort: cohort,
   });
 
   if (error) return Response.json({ error: error.message }, { status: 500 });
